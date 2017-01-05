@@ -11,19 +11,11 @@ class DistrictRepository
   end
 
   def load_data(data_file_hash)
-    data_file_hash.each do |key, value|
-      file_list = value.values.map do |file_name|
-        file_name
-      end
-    end
-    binding.pry
-    
-    file_list.each do |file|
-      read_file(file)
-    #need an enumerable that moves through the hash
-    #and feeds the file_name (from the hash value)
-    #to the read_file method
-  end
+    data_file_hash.each_value do |value|
+     value.each_value do |file|
+       read_file(file)
+     end
+   end
 end
 
   def read_file(file_name)
@@ -40,6 +32,17 @@ end
 
   def find_by_name(name)
     @repository[name.upcase]
+  end
+
+  def find_all_matching(string)
+    matching = []
+    @repository.each_pair do |k,v|
+      # binding.pry
+      if k.include?(string)
+        matching.push(v)
+      end
+    end
+    matching
   end
 
 end
