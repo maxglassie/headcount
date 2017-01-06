@@ -6,8 +6,8 @@ class DistrictRepository
 
   attr_accessor :repository
 
-  def initialize
-    @repository = Hash.new
+  def initialize(data = {})
+    @repository = data
   end
 
   def load_data(data_file_hash)
@@ -36,10 +36,9 @@ end
 
   def find_all_matching(string)
     matching = []
-    @repository.each_pair do |k,v|
-      # binding.pry
-      if k.include?(string)
-        matching.push(v)
+    @repository.each do |key, value|
+      if key.include?(string.upcase)
+        matching << value
       end
     end
     matching

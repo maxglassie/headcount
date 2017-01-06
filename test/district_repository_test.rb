@@ -24,7 +24,6 @@ def test_district_creates_new_instance_with_name_hash
 end
 
 def test_dr_can_load_csv_file
-  #update this test file and the next so load_data takes a hash
   @dr.load_data({
       :enrollment => {
                 :kindergarten => "./data/Kindergartners in full-day program.csv"
@@ -35,6 +34,7 @@ def test_dr_can_load_csv_file
 end
 
 def test_find_by_name_returns_nil
+  skip
   @dr.load_data({
       :enrollment => {
                 :kindergarten => "./data/Kindergartners in full-day program.csv"
@@ -50,28 +50,30 @@ def test_find_by_name_returns_district
                                 }
                           })
   returned_district = @dr.find_by_name("ACADEMY 20")
-  p returned_district
-  assert_equal District, returned_district.class
+  assert_equal "ACADEMY 20", returned_district.data[:name]
 end
 
-def test_find_all_matching_returns_empty_array
+def test_find_all_matching_districts
   @dr.load_data({
       :enrollment => {
                 :kindergarten => "./data/Kindergartners in full-day program.csv"
                                 }
                           })
-  returned_district = @dr.find_all_matching("ACA")
-  binding.pry
-  assert_equal District, returned_district.first.class
-  #check each key in the repository
-  #and see if that key includes the argument ("A")
-  #if includes is true
-  #return the key's value (which is a district object)
+  returned_district = @dr.find_all_matching("CA")
+  # binding.pry
+  assert_equal "CALHAN RJ-1", returned_district[1].data[:name]
 end
 
-def test_find_all_matching_returns_case_insensative_matches
-
-
+def test_find_all_matching_districts_canned_data
+  #use fixtures for 
+    d1 = District.new({:name => "ADAMS"})
+    d2 = District.new({:name => "ACADEMY 20"})
+    dr = DistrictRepository.new({"ADAMS" => d1, "ACADEMY 20" => d2})
+    
+    assert_equal d1, dr.find_by_name("Adams")
+    assert_equal d2, dr.find_by_name("ACADEMY 20")
 end
 
 end #class end
+
+
