@@ -23,8 +23,8 @@ end
 
   def read_file(file_name)
     contents = CSV.open(file_name,
-                                          headers: true,
-                                          header_converters: :symbol)
+                        headers: true,
+                        header_converters: :symbol)
       contents.each do |row|
         name = row[:location].upcase
             if @repository[name] == nil

@@ -22,31 +22,41 @@ end
 
   def read_file(file_name)
     contents = CSV.open(file_name,
-                                          headers: true,
-                                          header_converters: :symbol)
+                        headers: true,
+                        header_converters: :symbol)
+
+      enrollment_year_and_value = {}
+
       contents.each do |row|
-        name = row[:location].upcase
-        year = row[:timeframe].to_i
-        data = row[:data].to_f
-            #if repo doesn't contain the object, create a new object
-            #if repo does contain the object, add the year / data hash
-            #to the kindergarten key
-            #has to navigate to the kindergarten key and
-            #then go another layer deeper to add to the hash
-            #it'll need
-            if @repository[name] == nil
-                @repository[name] = Enrollment.new({:name => name,
-                                                                              :kindergarten_participation => {year => data}})
-            else
-              @repository[name]
-              enrollment = @repository[name]
-              enrollment.data.each do |key, value|
-                    if key == :kindergarten_participation
-                      :kindergarten_participation[year] += data
-                    end
-                  end
-            end
+        name = row[:location]
+        year = row[:timeframe]
+        data = row[:data]
+        if enrollment_year_and_value[name].nil?
+          # make a key value pair with the name and a hash with the timeframe
+          enrollment_year_and_value[name] = {}
+        else
+          # add year and data for that district to it's hash
+          enrollment_year_and_value[name][year] = data
+        end
       end
+        # binding.pry
+      enrollment_year_and_value.each do |district,data|
+      @repository[district.upcase] = Enrollment.new({:name => district.upcase, :kindergarten_participation => data})
+      end
+  end
+
+  def find_by_name(name)
+    @repository[name.upcase]
+  end
+
+  def find_all_matching(string)
+    matching = []
+    @repository.each_pair do |key, value|
+      if key.include?(string)
+        matching.push(value)
+      end
+    end
+    matching
   end
 
 end

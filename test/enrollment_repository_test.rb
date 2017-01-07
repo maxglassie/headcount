@@ -5,7 +5,7 @@ require './lib/enrollment'
 
 class EnrollmentRepositoryTest < Minitest::Test
 
-def setup #operates like initialize
+def setup 
   @dr = EnrollmentRepository.new
 end
 
@@ -63,5 +63,4 @@ def test_find_by_name_returns_enrollment
 end
 
 end #class end
-
 
