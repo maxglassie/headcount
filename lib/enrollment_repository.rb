@@ -47,15 +47,4 @@ end
     @repository[name.upcase]
   end
 
-  def find_all_matching(string)
-    matching = []
-    @repository.each_pair do |key, value|
-      # binding.pry
-      if key.include?(string)
-        matching.push(value)
-      end
-    end
-    matching
-  end
-
 end
