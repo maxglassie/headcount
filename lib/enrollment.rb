@@ -3,7 +3,6 @@ class Enrollment
 
   def initialize(hash)
     @data = hash
-    # binding.pry
   end
 
   def kindergarten_participation_by_year
@@ -14,10 +13,15 @@ class Enrollment
     end
       stored
   end
-  #
-  # def kindergarten_participation_in_year(@data)
-  #   # binding.pry
-  #   @data
-  # end
+
+  def kindergarten_participation_in_year(year)
+    stored = {}
+    kinder_by_year = @data[:kindergarten_participation]
+    kinder_by_year.each do |year,data|
+      stored[year] = data.to_s
+      binding.pry
+    end
+    stored
+  end
 
 end
