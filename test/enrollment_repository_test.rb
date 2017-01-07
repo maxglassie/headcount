@@ -5,68 +5,62 @@ require './lib/enrollment'
 
 class EnrollmentRepositoryTest < Minitest::Test
 
-  def setup
-    @er = EnrollmentRepository.new
-  end
+def setup 
+  @dr = EnrollmentRepository.new
+end
 
-  def test_enrollment_repo_exists
-    assert_equal EnrollmentRepository, @er.class
-  end
+def test_enrollment_repo_exists
+  # skip
+  assert_equal EnrollmentRepository, @dr.class
+end
 
-  def test_enrollment_creates_new_instance_with_empty_hash_argument
-    enrollment = Enrollment.new(Hash.new)
-    assert_equal Hash.new, enrollment.data
-  end
+def test_enrollment_creates_new_instance_with_empty_hash_argument
+  # skip
+  enrollment = Enrollment.new(Hash.new)
+  assert_equal Hash.new, enrollment.data
+end
 
-  def test_enrollment_creates_new_instance_with_name_hash
-    enrollment = Enrollment.new({:name => "test_name"})
-    assert_equal "test_name", enrollment.data[:name]
-  end
+def test_enrollment_creates_new_instance_with_name_hash
+  # skip
+  enrollment = Enrollment.new({:name => "ACADEMY 20",
+                                                  :kindergarten_participation => {2010 => 0.3915, 2011 => 0.35356, 2012 => 0.2677}})
+  assert_equal "ACADEMY 20", enrollment.data[:name]
+  assert_equal ({2010 => 0.3915, 2011 => 0.35356, 2012 => 0.2677}), enrollment.data[:kindergarten_participation]
+end
 
-  def test_dr_can_load_csv_file
-    #update this test file and the next so load_data takes a hash
-    @er.load_data({
-        :enrollment => {
-                  :kindergarten => "./data/Kindergartners in full-day program.csv"
-                                  }
-                            })
-    enrollment = @er.repository["COLORADO"]
-    assert_equal "COLORADO", enrollment.data[:name]
-  end
+def test_dr_can_load_csv_file
+  # skip
+  @dr.load_data({
+      :enrollment => {
+                :kindergarten => "./test/fixtures/kinder_test_load_data_clean.csv"
+                                }
+                          })
+  enrollment = @dr.repository["Colorado".upcase]
+  assert_equal "Colorado".upcase, enrollment.data[:name]
 
-  def test_find_by_name_returns_nil
-    @er.load_data({
-        :enrollment => {
-                  :kindergarten => "./data/Kindergartners in full-day program.csv"
-                                  }
-                            })
-    assert_nil @er.find_by_name("NOT THERE")
-  end
+  assert_equal ({2011 => 0.672, 2012 => 0.695, 2013 => 0.70263, 2014 => 0.74118}), enrollment.data[:kindergarten_participation]
+end
 
-  def test_find_by_name_returns_enrollment
-    @er.load_data({
-        :enrollment => {
-                  :kindergarten => "./data/Kindergartners in full-day program.csv"
-                                  }
-                            })
-    returned_enrollment = @er.find_by_name("ACADEMY 20")
-    p returned_enrollment
-    assert_equal Enrollment, returned_enrollment.class
-  end
+def test_find_by_name_returns_nil
+  skip
+  @dr.load_data({
+      :enrollment => {
+                :kindergarten => "./data/Kindergartners in full-day program.csv"
+                                }
+                          })
+  assert_nil @dr.find_by_name("NOT THERE")
+end
 
-  def test_find_all_matching_returns_empty_array
-    @er.load_data({
-        :enrollment => {
-                  :kindergarten => "./data/Kindergartners in full-day program.csv"
-                                  }
-                            })
-    returned_enrollment = @er.find_all_matching("ACA")
-    # binding.pry
-    assert_equal Enrollment, returned_enrollment.first.class
-    #check each key in the repository
-    #and see if that key includes the argument ("A")
-    #if includes is true
-    #return the key's value (which is a enrollment object)
-  end
+def test_find_by_name_returns_enrollment
+  skip
+  @dr.load_data({
+      :enrollment => {
+                :kindergarten => "./data/Kindergartners in full-day program.csv"
+                                }
+                          })
+  returned_enrollment = @dr.find_by_name("ACADEMY 20")
+  assert_equal "ACADEMY 20", returned_enrollment.data[:name]
+end
 
 end #class end
+

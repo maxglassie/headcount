@@ -6,12 +6,14 @@ class EnrollmentRepository
 
   attr_accessor :repository
 
-  def initialize
-    @repository = Hash.new
+  def initialize(data = {})
+    @repository = data
   end
 
-  def load_data(data_file_hash)
+   def load_data(data_file_hash)
     data_file_hash.each_value do |value|
+      #may have to match the key value and handle differently - create a repo
+      #this is interesting logic, will need to be abstracted to a different method
      value.each_value do |file|
        read_file(file)
      end
@@ -49,10 +51,9 @@ end
 
   def find_all_matching(string)
     matching = []
-    @repository.each_pair do |k,v|
-      # binding.pry
-      if k.include?(string)
-        matching.push(v)
+    @repository.each_pair do |key, value|
+      if key.include?(string)
+        matching.push(value)
       end
     end
     matching
