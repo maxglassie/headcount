@@ -23,7 +23,7 @@ class EnrollmentRepositoryTest < Minitest::Test
     assert_equal ({2010 => 0.3915, 2011 => 0.35356, 2012 => 0.2677}), enrollment.data[:kindergarten_participation]
   end
 
-  def test_dr_can_load_csv_file
+  def test_er_can_load_csv_file
     @er.load_data({
         :enrollment => {
                   :kindergarten => "./test/fixtures/kinder_test_load_data_clean.csv"
@@ -42,7 +42,7 @@ class EnrollmentRepositoryTest < Minitest::Test
     assert_nil @er.find_by_name("NOT THERE")
   end
 
-  def test_find_by_name_returns_array_of_enrollment_objects
+  def test_find_by_name_returns_object
     @er.load_data({
         :enrollment => {
                   :kindergarten => "./test/fixtures/kinder_test_load_data_clean.csv"

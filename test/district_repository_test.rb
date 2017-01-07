@@ -43,17 +43,17 @@ class DistrictRepositoryTest < Minitest::Test
     assert_nil @dr.find_by_name("NOT THERE")
   end
 
-  def test_find_by_name_returns_district
+  def test_find_by_name_returns_object
     @dr.load_data({
         :enrollment => {
                   :kindergarten => "./test/fixtures/kinder_test_load_data_clean.csv"
                                   }
                             })
     returned_district = @dr.find_by_name("ACADEMY 20")
-    assert_equal District, returned_district.class
+    assert_equal "ACADEMY 20", returned_district.data[:name]
   end
 
-  def test_find_all_matching_returns
+  def test_find_all_matching_returns_array_of_objects
     @dr.load_data({
         :enrollment => {
                   :kindergarten => "./test/fixtures/kinder_test_load_data_clean.csv"

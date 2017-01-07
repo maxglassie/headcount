@@ -8,7 +8,7 @@ class Enrollment
   def kindergarten_participation_by_year
     stored = {}
     kinder_by_year = @data[:kindergarten_participation]
-    kinder_by_year.each do |year,data|
+    kinder_by_year.each do |year, data|
       stored[year] = data.to_s[0..4].to_f
     end
       stored
@@ -18,8 +18,8 @@ class Enrollment
     stored = {}
     kinder_by_year = @data[:kindergarten_participation]
     kinder_by_year.each do |year,data|
-      stored[year] = data.to_s
-      # binding.pry
+      stored[year] = data.to_s[0..4].to_f
+      binding.pry
     end
     stored
   end
