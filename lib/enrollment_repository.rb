@@ -1,6 +1,6 @@
 require 'pry'
 require "csv"
-require "./lib/enrollment"
+require_relative "enrollment"
 
 class EnrollmentRepository
 

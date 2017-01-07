@@ -27,7 +27,7 @@ class DistrictRepositoryTest < Minitest::Test
     #update this test file and the next so load_data takes a hash
     @dr.load_data({
         :enrollment => {
-                  :kindergarten => "./data/Kindergartners in full-day program.csv"
+                  :kindergarten => "./test/fixtures/kinder_test_load_data_clean.csv"
                                   }
                             })
     district = @dr.repository["Colorado".upcase]
@@ -37,7 +37,7 @@ class DistrictRepositoryTest < Minitest::Test
   def test_find_by_name_returns_nil
     @dr.load_data({
         :enrollment => {
-                  :kindergarten => "./data/Kindergartners in full-day program.csv"
+                  :kindergarten => "./test/fixtures/kinder_test_load_data_clean.csv"
                                   }
                             })
     assert_nil @dr.find_by_name("NOT THERE")
@@ -46,23 +46,22 @@ class DistrictRepositoryTest < Minitest::Test
   def test_find_by_name_returns_district
     @dr.load_data({
         :enrollment => {
-                  :kindergarten => "./data/Kindergartners in full-day program.csv"
+                  :kindergarten => "./test/fixtures/kinder_test_load_data_clean.csv"
                                   }
                             })
     returned_district = @dr.find_by_name("ACADEMY 20")
-    p returned_district
     assert_equal District, returned_district.class
   end
 
-  def test_find_all_matching_returns_case_insensative_matches
+  def test_find_all_matching_returns
     @dr.load_data({
         :enrollment => {
-                  :kindergarten => "./data/Kindergartners in full-day program.csv"
+                  :kindergarten => "./test/fixtures/kinder_test_load_data_clean.csv"
                                   }
                             })
-    returned_district = @dr.find_all_matching("ACA")
-    # binding.pry
-    assert_equal District, returned_district.first.class
+    returned_district = @dr.find_all_matching("A")
+
+    assert_equal 7, returned_district.count
   end
 
 end #class end

@@ -1,6 +1,6 @@
 require 'pry'
 require "csv"
-require "./lib/district"
+require_relative "district"
 
 class DistrictRepository
 
@@ -36,10 +36,9 @@ end
 
   def find_all_matching(string)
     matching = []
-    @repository.each_pair do |k,v|
-      if k.include?(string)
-        matching.push(v)
-        binding.pry
+    @repository.each_pair do |key, value|
+      if key.include?(string)
+        matching.push(value)
       end
     end
     matching

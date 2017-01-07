@@ -19,7 +19,7 @@ class Enrollment
     kinder_by_year = @data[:kindergarten_participation]
     kinder_by_year.each do |year,data|
       stored[year] = data.to_s
-      binding.pry
+      # binding.pry
     end
     stored
   end
