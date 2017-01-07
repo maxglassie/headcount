@@ -31,12 +31,13 @@ end
             #if repo doesn't contain the object, create a new object
             #if repo does contain the object, add the year / data hash
             #to the kindergarten key
+            #has to navigate to the kindergarten key and
+            #then go another layer deeper to add to the hash
+            #it'll need
             if @repository[name] == nil
                 @repository[name] = Enrollment.new({:name => name,
                                                                               :kindergarten_participation => {year => data}})
-            else 
-
-
+            else
               @repository[name]
               enrollment = @repository[name]
               enrollment.data.each do |key, value|
