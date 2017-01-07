@@ -10,8 +10,11 @@ class DistrictRepository
     @repository = data
   end
 
+#could refactor - move the hash iterator out 
   def load_data(data_file_hash)
     data_file_hash.each_value do |value|
+      #may have to match the key value and handle differently - create a repo
+      #this is interesting logic, will need to be abstracted to a different method
      value.each_value do |file|
        read_file(file)
      end
