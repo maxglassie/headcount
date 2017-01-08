@@ -64,4 +64,15 @@ class DistrictRepositoryTest < Minitest::Test
     assert_equal 7, returned_district.count
   end
 
+  def test_district_repository_creates_enrollment_repository
+    @dr.load_data({
+        :enrollment => {
+                  :kindergarten => "./test/fixtures/kinder_test_load_data_clean.csv"
+                                  }
+                            })
+    assert_equal EnrollmentRepository, @dr.relationships[:enrollment].class
+    district = @dr.find_by_name("ACADEMY 20")
+    assert_equal 0.489, district.enrollment.kindergarten_participation_in_year(2011)
+  end
+
 end #class end

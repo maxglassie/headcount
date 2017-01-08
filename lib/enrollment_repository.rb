@@ -11,12 +11,14 @@ class EnrollmentRepository
   end
 
   def load_data(data_file_hash)
-    data_file_hash.each_value do |value|
-     value.each_value do |file|
-       read_file(file)
-     end
-   end
-end
+   read_category_files(data_file_hash)
+  end
+
+  def read_category_files(value)
+    value.each_value do |file|
+         read_file(file)
+       end
+  end
 
   def read_file(file_name)
     contents = CSV.open(file_name,
