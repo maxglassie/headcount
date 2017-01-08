@@ -2,7 +2,6 @@ class District
   attr_accessor :data
 
   def initialize(hash, parent_repository = nil)
-    @data =  hash
     @parent_repository = parent_repository
   end
 

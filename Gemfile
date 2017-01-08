@@ -5,4 +5,5 @@ gem 'reek'
 gem 'rake'
 gem 'minitest'
 gem 'pry'
-gem 'simplecov'
+gem 'simplecov' 
+

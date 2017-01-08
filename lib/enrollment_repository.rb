@@ -6,50 +6,34 @@ class EnrollmentRepository
 
   attr_accessor :repository
 
-  def initialize
-    @repository = Hash.new
+  def initialize(data = {})
+    @repository = data
   end
+
 
   def load_data(data_file_hash)
    read_category_files(data_file_hash)
   end
-
      #logic that dispatches hashes / files depending on their name / category
       #each file may have to take a different read_file method
-
   def read_category_files(value)
     value.each_value do |file|
          read_file(file)
        end
   end
 
-  # def create_hash_from_file(file_name)
-  #   contents = CSV.open(file_name,
-  #                       headers: true,
-  #                       header_converters: :symbol)
-
-  #     enrollment_year_and_value = {}
-
-  #     contents.each do |row|
-  #       name = row[:location]
-  #       year = row[:timeframe].to_i
-  #       data = row[:data].to_f
-  #       if enrollment_year_and_value[name].nil?
-  #         enrollment_year_and_value[name] = {}
-  #         enrollment_year_and_value[name][year] = data
-  #       else
-  #         enrollment_year_and_value[name][year] = data
-  #       end
-  #     end
-
-  #     enrollment_year_and_value.each do |district, data|
-  #     @repository[district.upcase] = Enrollment.new({:name => district.upcase, :kindergarten_participation => data})
-  #     end
-  # end
-
-  #DON'T DELETE THIS - the real code
   # def create_read_file_method(file, column_header_1, column_name_1, column_header_2, column_header_3)
   # end
+
+   def load_data(data_file_hash)
+    data_file_hash.each_value do |value|
+      #may have to match the key value and handle differently - create a repo
+      #this is interesting logic, will need to be abstracted to a different method
+     value.each_value do |file|
+       read_file(file)
+     end
+   end
+  end
 
   def read_file(file_name)
     contents = CSV.open(file_name,
@@ -73,7 +57,7 @@ class EnrollmentRepository
           enrollment_year_and_value[name][year] = data
         end
       end
-
+    
       enrollment_year_and_value.each do |district, data|
       @repository[district.upcase] = Enrollment.new({:name => district.upcase, :kindergarten_participation => data})
       end
