@@ -27,18 +27,16 @@ end
 
       contents.each do |row|
         name = row[:location]
-        year = row[:timeframe]
-        data = row[:data]
+        year = row[:timeframe].to_i
+        data = row[:data].to_f
         if enrollment_year_and_value[name].nil?
-          # make a key value pair with the name and a hash with the timeframe
           enrollment_year_and_value[name] = {}
           enrollment_year_and_value[name][year] = data
         else
-          # add year and data for that district to it's hash
           enrollment_year_and_value[name][year] = data
         end
       end
-        binding.pry
+
       enrollment_year_and_value.each do |district, data|
       @repository[district.upcase] = Enrollment.new({:name => district.upcase, :kindergarten_participation => data})
       end

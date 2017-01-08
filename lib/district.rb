@@ -5,4 +5,8 @@ class District
     @data =  hash
   end
 
+  def name
+    @data[:name]
+  end
+
 end
