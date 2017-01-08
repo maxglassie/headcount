@@ -26,7 +26,7 @@ class DistrictRepositoryTest < Minitest::Test
   def test_dr_can_load_csv_file
     @dr.load_data({
         :enrollment => {
-                  :kindergarten => "./data/Kindergartners in full-day program.csv"
+                  :kindergarten => "./test/fixtures/kinder_test_load_data_clean.csv"
                                   }
                             })
     district = @dr.repository["Colorado".upcase]
@@ -37,30 +37,42 @@ class DistrictRepositoryTest < Minitest::Test
     skip
     @dr.load_data({
         :enrollment => {
-                  :kindergarten => "./data/Kindergartners in full-day program.csv"
+                  :kindergarten => "./test/fixtures/kinder_test_load_data_clean.csv"
                                   }
                             })
     assert_nil @dr.find_by_name("NOT THERE")
   end
 
-  def test_find_by_name_returns_district
+  def test_find_by_name_returns_object
     @dr.load_data({
         :enrollment => {
-                  :kindergarten => "./data/Kindergartners in full-day program.csv"
+                  :kindergarten => "./test/fixtures/kinder_test_load_data_clean.csv"
                                   }
                             })
     returned_district = @dr.find_by_name("ACADEMY 20")
     assert_equal "ACADEMY 20", returned_district.data[:name]
   end
 
-  def test_find_all_matching_districts
+  def test_find_all_matching_returns_array_of_objects
     @dr.load_data({
         :enrollment => {
-                  :kindergarten => "./data/Kindergartners in full-day program.csv"
+                  :kindergarten => "./test/fixtures/kinder_test_load_data_clean.csv"
                                   }
                             })
-    returned_district = @dr.find_all_matching("CA")
-    assert_equal "CALHAN RJ-1", returned_district[1].data[:name]
+    returned_district = @dr.find_all_matching("A")
+
+    assert_equal 7, returned_district.count
+  end
+
+  def test_district_repository_creates_enrollment_repository
+    @dr.load_data({
+        :enrollment => {
+                  :kindergarten => "./test/fixtures/kinder_test_load_data_clean.csv"
+                                  }
+                            })
+    assert_equal EnrollmentRepository, @dr.relationships[:enrollment].class
+    district = @dr.find_by_name("ACADEMY 20")
+    assert_equal 0.489, district.enrollment.kindergarten_participation_in_year(2011)
   end
 
   def test_find_all_matching_districts_canned_data
