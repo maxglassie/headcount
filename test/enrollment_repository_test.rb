@@ -2,6 +2,7 @@ require 'minitest/autorun'
 require 'minitest/pride'
 require './lib/enrollment_repository'
 require './lib/enrollment'
+require './lib/district_repository'
 
 class EnrollmentRepositoryTest < Minitest::Test
 
@@ -25,29 +26,23 @@ class EnrollmentRepositoryTest < Minitest::Test
 
   def test_er_can_load_csv_file
     @er.load_data({
-        :enrollment => {
                   :kindergarten => "./test/fixtures/kinder_test_load_data_clean.csv"
-                                  }
-                            })
+                                  })
     enrollment = @er.repository["COLORADO"]
     assert_equal "COLORADO", enrollment.data[:name]
   end
 
   def test_find_by_name_returns_nil
     @er.load_data({
-        :enrollment => {
                   :kindergarten => "./test/fixtures/kinder_test_load_data_clean.csv"
-                                  }
-                            })
+                                  })
     assert_nil @er.find_by_name("NOT THERE")
   end
 
   def test_find_by_name_returns_object
     @er.load_data({
-        :enrollment => {
                   :kindergarten => "./test/fixtures/kinder_test_load_data_clean.csv"
-                                  }
-                            })
+                                  })
     returned_enrollment = @er.find_by_name("ACADEMY 20")
     assert_equal "ACADEMY 20", returned_enrollment.data[:name]
   end
