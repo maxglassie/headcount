@@ -24,6 +24,7 @@ class DistrictRepository
   #there will be a similar dispatch on type method for the 
   #enrollment repository, etc, based on the file
   #could create a higher order method for making the methods?
+  #
   def make_category_repositories(data_file_hash)
     if data_file_hash[:enrollment]
       e = EnrollmentRepository.new
