@@ -25,16 +25,6 @@ class EnrollmentRepository
   # def create_read_file_method(file, column_header_1, column_name_1, column_header_2, column_header_3)
   # end
 
-   def load_data(data_file_hash)
-    data_file_hash.each_value do |value|
-      #may have to match the key value and handle differently - create a repo
-      #this is interesting logic, will need to be abstracted to a different method
-     value.each_value do |file|
-       read_file(file)
-     end
-   end
-  end
-
   def read_file(file_name)
     contents = CSV.open(file_name,
                         headers: true,

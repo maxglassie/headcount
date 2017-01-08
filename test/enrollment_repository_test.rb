@@ -7,12 +7,12 @@ require './lib/district_repository'
 class EnrollmentRepositoryTest < Minitest::Test
 
 def setup 
-  @dr = EnrollmentRepository.new
+  @er = EnrollmentRepository.new
 end
 
 def test_enrollment_repo_exists
   # skip
-  assert_equal EnrollmentRepository, @dr.class
+  assert_equal EnrollmentRepository, @er.class
 end
 
 def test_enrollment_creates_new_instance_with_empty_hash_argument
@@ -59,12 +59,10 @@ end
 
 def test_dr_can_load_csv_file
   # skip
-  @dr.load_data({
-      :enrollment => {
+  @er.load_data({
                 :kindergarten => "./test/fixtures/kinder_test_load_data_clean.csv"
-                                }
-                          })
-  enrollment = @dr.repository["Colorado".upcase]
+                                })
+  enrollment = @er.repository["Colorado".upcase]
   assert_equal "Colorado".upcase, enrollment.data[:name]
 
   assert_equal ({2011 => 0.672, 2012 => 0.695, 2013 => 0.70263, 2014 => 0.74118}), enrollment.data[:kindergarten_participation]
@@ -72,22 +70,20 @@ end
 
 def test_find_by_name_returns_nil
   skip
-  @dr.load_data({
-      :enrollment => {
-                :kindergarten => "./data/Kindergartners in full-day program.csv"
-                                }
-                          })
-  assert_nil @dr.find_by_name("NOT THERE")
+  @er.load_data({
+                :kindergarten => "./test/fixtures/kinder_test_load_data_clean.csv"
+                                })
+  assert_nil @er.find_by_name("NOT THERE")
 end
 
 def test_find_by_name_returns_enrollment
   skip
-  @dr.load_data({
+  @er.load_data({
       :enrollment => {
                 :kindergarten => "./data/Kindergartners in full-day program.csv"
                                 }
                           })
-  returned_enrollment = @dr.find_by_name("ACADEMY 20")
+  returned_enrollment = @er.find_by_name("ACADEMY 20")
   assert_equal "ACADEMY 20", returned_enrollment.data[:name]
 end
 
