@@ -13,27 +13,26 @@ class DistrictRepository
     @relationships = Hash.new
   end
 
-#could refactor - move the hash iterator out 
   def load_data(input_file_hash)
     make_category_repositories(input_file_hash)
     input_file_hash.each_value do |value|
-      #may have to match the key value and handle differently - create a repo
-      #this is interesting logic, will need to be abstracted to a different method
      value.each_value do |file|
        read_file(file)
      end
    end
   end
 
-  #there will be a similar dispatch on type method for the 
-  #enrollment repository, etc, based on the file
-  #could create a higher order method for making the methods?
-  #
   def make_category_repositories(input_file_hash)
-    if input_file_hash[:enrollment]
-      e = EnrollmentRepository.new
-      @relationships[:enrollment] = e
-      e.load_data(input_file_hash)
+    input_file_hash.each do |key, value|
+          if input_file_hash[key] == :enrollment
+            e = EnrollmentRepository.new
+            @relationships[:enrollment] = e
+            e.load_data(input_file_hash)
+          else input_file_hash[key] == :statewide_testing
+            s = StatewideTestRepository.new
+            @relationships[:statewide_testing] = s
+            s.load_data(input_file_hash)
+          end
     end
   end
 
