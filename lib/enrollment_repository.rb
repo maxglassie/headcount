@@ -10,57 +10,93 @@ class EnrollmentRepository
     @repository = data
   end
 
-
-  def load_data(data_file_hash)
-   read_category_files(data_file_hash)
-  end
-     #logic that dispatches hashes / files depending on their name / category
-      #each file may have to take a different read_file method
-  def read_category_files(value)
-    value.each_value do |file|
-         read_file(file)
-       end
+  def load_data(input_file_hash)
+    open_file_hash = create_open_file_hash(input_file_hash[:enrollment])
+    hash_of_data_hashes = create_data_hash_dispatcher(open_file_hash)
+    build_repository(hash_of_data_hashes)
   end
 
-  # def create_read_file_method(file, column_header_1, column_name_1, column_header_2, column_header_3)
-  # end
-
-   def load_data(data_file_hash)
-    data_file_hash.each_value do |value|
-      #may have to match the key value and handle differently - create a repo
-      #this is interesting logic, will need to be abstracted to a different method
-     value.each_value do |file|
-       read_file(file)
+  def create_open_file_hash(input_file_hash)
+    open_file_hash = {}
+    input_file_hash.each do |key, value|
+        open_file_hash[key] = open_file(value)
      end
-   end
+     open_file_hash
   end
 
-  def read_file(file_name)
-    contents = CSV.open(file_name,
-                        headers: true,
-                        header_converters: :symbol)
+  def create_data_hash_dispatcher(open_file_hash)
+    hash_of_data_hashes = {}
+    open_file_hash.each do |key, value|
+      if key == :kindergarten
+          hash_of_data_hashes[key] = kindergarten_create_data_hash(value)
+      else key == :high_school_graduation
+          hash_of_data_hashes[key] = highschool_create_data_hash(value)
+      end
+    end
+    hash_of_data_hashes
+  end
 
-      enrollment_year_and_value = {}
-  #iterate over the e_year_value hash and apply cleaning logic
-  #create a method that takes these names as arguments
-      contents.each do |row|
-        #column_header_1 = row[:column_name_1]
-        #column_header_2 = row[:column_name]
-        #column_header_3 = row[:column_name]
+  def populate_repository(data_hash)
+      data_hash.each do |district, data|
+        if @repository[district.upcase] == nil
+          @repository[district.upcase] = Enrollment.new({:name => district.upcase})
+        end
+    end
+  end
+
+  def add_data_to_repository_objects(key, data_hash)
+    data_hash.each do |district, data|
+      e = @repository[district.upcase]
+      e.add_data(key, data)
+    end
+  end
+
+  def build_repository(hash_of_data_hashes)
+    populate_repository(hash_of_data_hashes[:kindergarten])
+    hash_of_data_hashes.each do |key, value|
+      add_data_to_repository_objects(key, value)
+    end
+  end
+
+  def open_file(file_name)
+    CSV.open(file_name,
+                      headers: true,
+                      header_converters: :symbol)
+  end
+
+  def kindergarten_create_data_hash(csv)
+      returned_hash = {}
+
+      csv.each do |row|
         name = row[:location]
         year = row[:timeframe].to_i
         data = row[:data].to_f
-        if enrollment_year_and_value[name].nil?
-          enrollment_year_and_value[name] = {}
-          enrollment_year_and_value[name][year] = data
-        else
-          enrollment_year_and_value[name][year] = data
-        end
+          if returned_hash[name].nil?
+            returned_hash[name] = {}
+            returned_hash[name][year] = data
+          else
+            returned_hash[name][year] = data
+          end
       end
-    
-      enrollment_year_and_value.each do |district, data|
-      @repository[district.upcase] = Enrollment.new({:name => district.upcase, :kindergarten_participation => data})
+      returned_hash
+  end
+
+  def highschool_create_data_hash(csv)
+      returned_hash = {}
+
+      csv.each do |row|
+        name = row[:location]
+        year = row[:timeframe].to_i
+        data = row[:data].to_f
+          if returned_hash[name].nil?
+            returned_hash[name] = {}
+            returned_hash[name][year] = data
+          else
+            returned_hash[name][year] = data
+          end
       end
+
+      returned_hash
   end
 
   def find_by_name(name)
