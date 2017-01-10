@@ -10,77 +10,93 @@ class EnrollmentRepository
     @repository = data
   end
 
-  def load_data(data_file_hash)
-    dispatcher(data_file_hash)
+  def load_data(input_file_hash)
+    open_file_hash = create_open_file_hash(input_file_hash[:enrollment])
+    hash_of_data_hashes = create_data_hash_dispatcher(open_file_hash)
+    build_repository(hash_of_data_hashes)
   end
 
-  # def load_data(data_file_hash)
-  #   #dispatch on type for incoming hash
-  #   #to pass the correct file to the read_file
-  #  read_category_files(data_file_hash)
-  # end
+  def create_open_file_hash(input_file_hash)
+    open_file_hash = {}
+    input_file_hash.each do |key, value|
+        open_file_hash[key] = open_file(value)
+     end
+     open_file_hash
+  end
 
-  def dispatcher(data_file_hash)
-    #each statement to apply the logic
-    if data_file_hash[:kindergarten]
-      kinder = kindergarten_create_data_hash(data_file_hash[:kindergarten])
-      create_enrollment_repository(kinder)
-    elsif data_file_hash[:high_school_graduation]
-      high_school = high_school_create_data_hash(data_file_hash[:high_school_graduation])
-      create_enrollment_repository(high_school)
+  def create_data_hash_dispatcher(open_file_hash)
+    hash_of_data_hashes = {}
+    open_file_hash.each do |key, value|
+      if key == :kindergarten
+          hash_of_data_hashes[key] = kindergarten_create_data_hash(value)
+      else key == :high_school_graduation
+          hash_of_data_hashes[key] = highschool_create_data_hash(value)
+      end
+    end
+    hash_of_data_hashes
+  end
+
+  def populate_repository(data_hash)
+      data_hash.each do |district, data|
+        if @repository[district.upcase] == nil
+          @repository[district.upcase] = Enrollment.new({:name => district.upcase})
+        end
     end
   end
-     #logic that dispatches hashes / files depending on their name / category
-      #each file may have to take a different read_file method
-  # def read_category_files(value)
-  #   value.each_value do |file|
-  #     #read file method is customized for the given file
-  #        read_file(file)
-  #      end
-  # end
 
-  # def create_read_file_method(file, column_header_1, column_name_1, column_header_2, column_header_3)
-  # end
+  def add_data_to_repository_objects(key, data_hash)
+    data_hash.each do |district, data|
+      e = @repository[district.upcase]
+      e.add_data(key, data)
+    end
+  end
 
-  def kindergarten_create_data_hash(file_name)
-    contents = CSV.open(file_name,
-                        headers: true,
-                        header_converters: :symbol)
+  def build_repository(hash_of_data_hashes)
+    populate_repository(hash_of_data_hashes[:kindergarten])
+    hash_of_data_hashes.each do |key, value|
+      add_data_to_repository_objects(key, value)
+    end
+  end
 
-      enrollment_year_and_value = {}
+  def open_file(file_name)
+    CSV.open(file_name,
+                      headers: true,
+                      header_converters: :symbol)
+  end
 
-      contents.each do |row|
+  def kindergarten_create_data_hash(csv)
+      returned_hash = {}
+
+      csv.each do |row|
         name = row[:location]
         year = row[:timeframe].to_i
         data = row[:data].to_f
-        if enrollment_year_and_value[name].nil?
-          enrollment_year_and_value[name] = {}
-          enrollment_year_and_value[name][year] = data
-        else
-          enrollment_year_and_value[name][year] = data
-        end
+          if returned_hash[name].nil?
+            returned_hash[name] = {}
+            returned_hash[name][year] = data
+          else
+            returned_hash[name][year] = data
+          end
       end
-      enrollment_year_and_value
+      returned_hash
   end
 
-  #kindergarten_enrollment_year_and_value hash
-  #high_school_enrollment_year_and_value hash
-  #create a hash of hashes - {kindergarten => kindergarten_enrollment_year hash, 
-  #:high_school => high_school_hash}}
-  
-  # BIG DECISION - create the enrollment repo from a hash of hashes
-  # OR - add data from one hash to the existing objects in the repo unless they're nil, in which case create
-  # create enrollment object methods that add data to their hash
+  def highschool_create_data_hash(csv)
+      returned_hash = {}
 
-  def
+      csv.each do |row|
+        name = row[:location]
+        year = row[:timeframe].to_i
+        data = row[:data].to_f
+          if returned_hash[name].nil?
+            returned_hash[name] = {}
+            returned_hash[name][year] = data
+          else
+            returned_hash[name][year] = data
+          end
+      end
 
-  def create_enrollment_repository(enrollment_year_and_value)
-      enrollment_year_and_value.each do |district, data|
-      if @repository[district.upcase] == nil
-      @repository[district.upcase] = Enrollment.new({:name => district.upcase, :kindergarten_participation => hash_of_hashes[kindergarten_data], :high_school_graduation => data})
-      else @repository[district.upcase] #object is in the repo
-        #enrollment object.add_data(:hash_key, data)
-
+      returned_hash
   end
 
   def find_by_name(name)
