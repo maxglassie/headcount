@@ -8,24 +8,65 @@ require './lib/statewide_test_repository'
 
 class StatewideTestRepositoryTest < Minitest::Test
 
-def setup
-  @str = StatewideTestRepository.new
-end
-
-def test_statewide_testing_repository_basics
-    @str.load_data({
-                    :statewide_testing => {
-                      :third_grade => "./test/fixtures/3rd_grade_proficiency_percentage_fixture_COLORADO.csv",
-                      :math => "./test/fixtures/race_ethnicity_math_proficiency_COLORADO.csv"
+  def setup
+    @str = StatewideTestRepository.new
+    @load_data_hash = {
+                      :statewide_testing => {
+                        :third_grade => "./test/fixtures/3rd_grade_proficiency_percentage_fixture_COLORADO.csv",
+                        :math => "./test/fixtures/race_ethnicity_math_proficiency_COLORADO.csv"
+                      }
                     }
-                  })
-    simple
+  end
 
-    assert str.find_by_name("ACADEMY 20")
-    assert str.find_by_name("GUNNISON WATERSHED RE1J")
-end
+  def test_enrollment_repo_exists
+      assert_equal StatewideTestRepository, @str.class
+  end
+
+  def test_create_open_file_hash
+    output = @str.create_open_file_hash(@load_data_hash[:statewide_testing])
+
+    assert output[:third_grade]
+  end
+
+  def test_create_data_hash_dispatcher
+    output = @str.create_open_file_hash(@load_data_hash[:statewide_testing])
+    result = @str.create_data_hash_dispatcher(output)
+    
+    expected = {:third_grade=>{"Colorado"=>{2008=>0.501, 2009=>0.536, 2010=>0.504, 2011=>0.513, 2012=>0.525, 2013=>0.50947, 2014=>0.51072}},
+                        :math=>{"Colorado"=>{2011=>0.6585, 2012=>0.6618, 2013=>0.6697, 2014=>0.6712}, nil=>{0=>0.0}}}
+
+    assert_equal expected, result
+  end
+
+  def test_populate_repository
+    # skip
+    output = @str.create_open_file_hash(@load_data_hash[:statewide_testing])
+    data_hash = @str.create_data_hash_dispatcher(output)
+    @str.populate_repository(data_hash[:third_grade])
+
+    result = @str.find_by_name("Colorado")
+
+    expected = StatewideTest
+
+    assert_equal expected, result.class
+  end
+
+  def test_add_data_to_repository_objects
+    # skip
+    output = @str.create_open_file_hash(@load_data_hash[:statewide_testing])
+    data_hash = @str.create_data_hash_dispatcher(output)
+    @str.populate_repository(data_hash[:third_grade])
+
+    @str.add_data_to_repository_objects(:third_grade, data_hash[:third_grade])
+
+    statewide_test = @str.find_by_name("COLORADO")
+    result = statewide_test.data[:third_grade]
+
+    assert_equal 0.672, result
+  end
 
 def test_load_data_with_fixtures
+  # skip
   simple = StatewideTestRepository.new
     simple.load_data({
                     :statewide_testing => {
@@ -90,15 +131,15 @@ end
   #   dr
   # end
 
-  def statewide_repo_fixtures
-    simple = StatewideTestRepository.new
-    simple.load_data({
-                    :statewide_testing => {
-                      :third_grade => "./test/fixtures/3rd_grade_proficiency_percentage_fixture_COLORADO.csv",
-                      :math => "./test/fixtures/race_ethnicity_math_proficiency_COLORADO.csv"
-                    }
-                  })
-    simple
-  end
+  # def statewide_repo_fixtures
+  #   simple = StatewideTestRepository.new
+  #   simple.load_data({
+  #                   :statewide_testing => {
+  #                     :third_grade => "./test/fixtures/3rd_grade_proficiency_percentage_fixture_COLORADO.csv",
+  #                     :math => "./test/fixtures/race_ethnicity_math_proficiency_COLORADO.csv"
+  #                   }
+  #                 })
+  #   simple
+  # end
 
 end

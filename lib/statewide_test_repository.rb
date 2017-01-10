@@ -13,7 +13,6 @@ class StatewideTestRepository
   def load_data(input_file_hash)
     open_file_hash = create_open_file_hash(input_file_hash[:statewide_testing])
     hash_of_data_hashes = create_data_hash_dispatcher(open_file_hash)
-    binding.pry
     build_repository(hash_of_data_hashes)
   end
 
