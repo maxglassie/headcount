@@ -1,9 +1,10 @@
 require 'pry'
 require "csv"
 require_relative "statewide_test"
+require_relative "data_manager"
 
 class StatewideTestRepository
-
+  include DataManager
   attr_accessor :repository
 
   def initialize(data = {})
@@ -68,15 +69,18 @@ class StatewideTestRepository
       returned_hash = {}
 
       csv.each do |row|
-        name = row[:location]
-        year = row[:timeframe].to_i
-        data = row[:data].to_f
-        race = row[:raceethnicity]
+        name = location(row)
+        year = year(row)
+        data = percentage(row)
+        category = category(row)
+        binding.pry
           if returned_hash[name].nil?
             returned_hash[name] = {}
-            returned_hash[name][year] = data
-          else
-            returned_hash[name][year] = data
+            returned_hash[name][year] = {category => data}
+          elsif returned_hash[name][year].nil?
+            returned_hash[name][year] = {category => data}
+          else returned_hash[name][year][category].nil? 
+            returned_hash[name][year].merge({category => data})
           end
       end
       returned_hash
@@ -86,14 +90,16 @@ class StatewideTestRepository
       returned_hash = {}
 
       csv.each do |row|
-        name = row[:location]
-        year = row[:timeframe].to_i
-        data = row[:data].to_f
+        name = location(row)
+        year = year(row)
+        data = percentage(row)
+        category = category(row)
           if returned_hash[name].nil?
             returned_hash[name] = {}
-            returned_hash[name][year] = data
+            returned_hash[name][year] = {}
+            returned_hash[name][year] = {category => data}
           else
-            returned_hash[name][year] = data
+            returned_hash[name][year][category] = data
           end
       end
 
