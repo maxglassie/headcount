@@ -2,6 +2,7 @@ require 'pry'
 require "csv"
 require_relative "district"
 require_relative "enrollment_repository"
+require_relative "statewide_test_repository"
 
 class DistrictRepository
 
@@ -28,10 +29,14 @@ class DistrictRepository
             e = EnrollmentRepository.new
             @relationships[:enrollment] = e
             e.load_data(input_file_hash)
-          else input_file_hash[key] == :statewide_testing
+          elsif input_file_hash[key] == :statewide_testing
             s = StatewideTestRepository.new
             @relationships[:statewide_testing] = s
             s.load_data(input_file_hash)
+          else input_file_hash[key] == :economic_profile
+            epr = EconomicProfileRepository.new
+            @relationships[:economic_profile] = epr
+            epr.load_data(input_file_hash)
           end
     end
   end

@@ -1,20 +1,19 @@
 require 'pry'
 require "csv"
-require_relative "statewide_test"
+require_relative "economic_profile"
 require_relative "data_manager"
 
-class StatewideTestRepository
+class EconomicProfileRepository
   include DataManager
   attr_accessor :repository
 
   def initialize(data = {})
     @repository = data
-    @race_ethnicity = [:math, :reading, :writing]
-    @grade = [:third_grade, :eighth_grade]
+    @house_hold = [:median_household_income]
   end
 
   def load_data(input_file_hash)
-    open_file_hash = create_open_file_hash(input_file_hash[:statewide_testing])
+    open_file_hash = create_open_file_hash(input_file_hash[:economic_profile])
     hash_of_data_hashes = create_data_hash_dispatcher(open_file_hash)
     build_repository(hash_of_data_hashes)
   end
@@ -30,10 +29,8 @@ class StatewideTestRepository
   def create_data_hash_dispatcher(open_file_hash)
     hash_of_data_hashes = {}
     open_file_hash.each do |key, value|
-      if @grade.include?(key)
-          hash_of_data_hashes[key] = grade_create_data_hash(value)
-      else @race_ethnicity.include?(key)
-          hash_of_data_hashes[key] = race_ethnicity_create_data_hash(value)
+      if @house_hold.include?(key)
+          hash_of_data_hashes[key] = median_household_create_data_hash(value)
       end
     end
     hash_of_data_hashes
@@ -42,7 +39,7 @@ class StatewideTestRepository
   def populate_repository(data_hash)
       data_hash.each do |district, data|
         if @repository[district.upcase] == nil
-          @repository[district.upcase] = StatewideTest.new({:name => district.upcase})
+          @repository[district.upcase] = EconomicProfile.new({:name => district.upcase})
         end
     end
   end
@@ -55,7 +52,7 @@ class StatewideTestRepository
   end
 
   def build_repository(hash_of_data_hashes)
-    populate_repository(hash_of_data_hashes[:third_grade])
+    populate_repository(hash_of_data_hashes[:median_household_income])
     hash_of_data_hashes.each do |key, value|
       add_data_to_repository_objects(key, value)
     end
@@ -67,7 +64,7 @@ class StatewideTestRepository
                       header_converters: :symbol)
   end
 
-  def grade_create_data_hash(csv)
+  def median_household_create_data_hash(csv)
       returned_hash = {}
 
       csv.each do |row|
@@ -87,25 +84,25 @@ class StatewideTestRepository
       returned_hash
   end
 
-  def race_ethnicity_create_data_hash(csv)
-      returned_hash = {}
+  # def race_ethnicity_create_data_hash(csv)
+  #     returned_hash = {}
 
-      csv.each do |row|
-        name = location(row)
-        year = year(row)
-        data = percentage(row)
-        category = race_ethnicity(row)
-          if returned_hash[name].nil?
-            returned_hash[name] = {}
-            returned_hash[name][year] = {category => data}
-          elsif returned_hash[name][year].nil?
-            returned_hash[name][year] = {category => data}
-          else returned_hash[name][year][category].nil?
-            returned_hash[name][year] = returned_hash[name][year].merge({category => data})
-          end
-      end
-      returned_hash
-  end
+  #     csv.each do |row|
+  #       name = location(row)
+  #       year = year(row)
+  #       data = percentage(row)
+  #       category = race_ethnicity(row)
+  #         if returned_hash[name].nil?
+  #           returned_hash[name] = {}
+  #           returned_hash[name][year] = {category => data}
+  #         elsif returned_hash[name][year].nil?
+  #           returned_hash[name][year] = {category => data}
+  #         else returned_hash[name][year][category].nil?
+  #           returned_hash[name][year] = returned_hash[name][year].merge({category => data})
+  #         end
+  #     end
+  #     returned_hash
+  # end
 
   def find_by_name(name)
     @repository[name.upcase]

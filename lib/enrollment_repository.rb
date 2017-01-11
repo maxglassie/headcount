@@ -1,9 +1,10 @@
 require 'pry'
 require "csv"
 require_relative "enrollment"
+require_relative "data_manager"
 
 class EnrollmentRepository
-
+  include DataManager
   attr_accessor :repository
 
   def initialize(data = {})
@@ -68,9 +69,9 @@ class EnrollmentRepository
       returned_hash = {}
 
       csv.each do |row|
-        name = row[:location]
-        year = row[:timeframe].to_i
-        data = row[:data].to_f
+        name = location(row)
+        year = year(row)
+        data = percentage(row)
           if returned_hash[name].nil?
             returned_hash[name] = {}
             returned_hash[name][year] = data
@@ -85,9 +86,9 @@ class EnrollmentRepository
       returned_hash = {}
 
       csv.each do |row|
-        name = row[:location]
-        year = row[:timeframe].to_i
-        data = row[:data].to_f
+        name = location(row)
+        year = year(row)
+        data = percentage(row)
           if returned_hash[name].nil?
             returned_hash[name] = {}
             returned_hash[name][year] = data

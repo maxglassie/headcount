@@ -14,4 +14,8 @@ class District
     @parent_repository.relationships[:enrollment].find_by_name(self.data[:name])
   end
 
+  def statewide_test
+    @parent_repository.relationships[:statewide_testing].find_by_name(self.data[:name])
+  end
+
 end

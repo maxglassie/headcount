@@ -8,7 +8,7 @@ require './lib/statewide_test_repository'
 
 class StatewideTestTest< Minitest::Test
 
-  def test_enrollment_creates_new_instance_with_empty_hash_argument
+  def test_statewide_creates_new_instance_with_empty_hash_argument
     statewide = StatewideTest.new(Hash.new)
     assert_equal Hash.new, statewide.data
   end
