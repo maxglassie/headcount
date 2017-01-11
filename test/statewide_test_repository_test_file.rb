@@ -16,6 +16,16 @@ class StatewideTestRepositoryTest < Minitest::Test
                         :math => "./test/fixtures/race_ethnicity_math_proficiency_COLORADO.csv"
                       }
                     }
+
+    @load_full_data_hash = {
+                    :statewide_testing => {
+                      :third_grade => "./data/3rd grade students scoring proficient or above on the CSAP_TCAP.csv",
+                      :eighth_grade => "./data/8th grade students scoring proficient or above on the CSAP_TCAP.csv",
+                      :math => "./data/Average proficiency on the CSAP_TCAP by race_ethnicity_ Math.csv",
+                      :reading => "./data/Average proficiency on the CSAP_TCAP by race_ethnicity_ Reading.csv",
+                      :writing => "./data/Average proficiency on the CSAP_TCAP by race_ethnicity_ Writing.csv"
+                    }
+                  }
   end
 
   def test_enrollment_repo_exists
@@ -32,14 +42,12 @@ class StatewideTestRepositoryTest < Minitest::Test
     output = @str.create_open_file_hash(@load_data_hash[:statewide_testing])
     result = @str.create_data_hash_dispatcher(output)
     
-    expected = {:third_grade=>{"Colorado"=>{2008=>0.501, 2009=>0.536, 2010=>0.504, 2011=>0.513, 2012=>0.525, 2013=>0.50947, 2014=>0.51072}},
-                        :math=>{"Colorado"=>{2011=>0.6585, 2012=>0.6618, 2013=>0.6697, 2014=>0.6712}, nil=>{0=>0.0}}}
+    expected = 0.541
 
-    assert_equal expected, result
+    assert_equal expected, result[:math]["COLORADO"][2011][:"hawaiian/pacific_islander"]
   end
 
   def test_populate_repository
-    # skip
     output = @str.create_open_file_hash(@load_data_hash[:statewide_testing])
     data_hash = @str.create_data_hash_dispatcher(output)
     @str.populate_repository(data_hash[:third_grade])
@@ -52,7 +60,6 @@ class StatewideTestRepositoryTest < Minitest::Test
   end
 
   def test_add_data_to_repository_objects
-    # skip
     output = @str.create_open_file_hash(@load_data_hash[:statewide_testing])
     data_hash = @str.create_data_hash_dispatcher(output)
     @str.populate_repository(data_hash[:third_grade])
@@ -61,12 +68,19 @@ class StatewideTestRepositoryTest < Minitest::Test
 
     statewide_test = @str.find_by_name("COLORADO")
     result = statewide_test.data[:third_grade]
+    expected = {2008=>{:math=>0.697, :reading=>0.703, :writing=>0.501},
+                        2009=>{:math=>0.691, :reading=>0.726, :writing=>0.536},
+                        2010=>{:math=>0.706, :reading=>0.698, :writing=>0.504},
+                        2011=>{:math=>0.696, :reading=>0.728, :writing=>0.513},
+                        2012=>{:reading=>0.739, :math=>0.71, :writing=>0.525},
+                        2013=>{:math=>0.72295, :reading=>0.73256, :writing=>0.50947},
+                        2014=>{:math=>0.71589, :reading=>0.71581, :writing=>0.51072}
+                      }
 
-    assert_equal 0.672, result
+    assert_equal expected, result
   end
 
 def test_load_data_with_fixtures
-  # skip
   simple = StatewideTestRepository.new
     simple.load_data({
                     :statewide_testing => {
@@ -76,8 +90,15 @@ def test_load_data_with_fixtures
                   })
     simple
 
+  expected = 0.541
+
   st = simple.find_by_name("COLORADO")
-  assert_equal "", st.data
+  assert_equal expected, st.data[:math][2011][:"hawaiian/pacific_islander"]
+end
+
+def test_load_full_data
+  @str.load_data(load_full_data_hash)
+  @str.
 end
 
 def test_basic_proficiency_by_grade
@@ -100,19 +121,19 @@ def test_basic_proficiency_by_grade
     end
 end
 
-# def statewide_repo
-#     str = StatewideTestRepository.new
-#     str.load_data({
-#                     :statewide_testing => {
-#                       :third_grade => "./data/3rd grade students scoring proficient or above on the CSAP_TCAP.csv",
-#                       :eighth_grade => "./data/8th grade students scoring proficient or above on the CSAP_TCAP.csv",
-#                       :math => "./data/Average proficiency on the CSAP_TCAP by race_ethnicity_ Math.csv",
-#                       :reading => "./data/Average proficiency on the CSAP_TCAP by race_ethnicity_ Reading.csv",
-#                       :writing => "./data/Average proficiency on the CSAP_TCAP by race_ethnicity_ Writing.csv"
-#                     }
-#                   })
-#     str
-#   end
+def statewide_repo
+    str = StatewideTestRepository.new
+    str.load_data({
+                    :statewide_testing => {
+                      :third_grade => "./data/3rd grade students scoring proficient or above on the CSAP_TCAP.csv",
+                      :eighth_grade => "./data/8th grade students scoring proficient or above on the CSAP_TCAP.csv",
+                      :math => "./data/Average proficiency on the CSAP_TCAP by race_ethnicity_ Math.csv",
+                      :reading => "./data/Average proficiency on the CSAP_TCAP by race_ethnicity_ Reading.csv",
+                      :writing => "./data/Average proficiency on the CSAP_TCAP by race_ethnicity_ Writing.csv"
+                    }
+                  })
+    str
+  end
 
   # def district_repo
   #   dr = DistrictRepository.new

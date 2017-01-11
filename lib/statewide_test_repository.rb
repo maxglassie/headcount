@@ -73,14 +73,13 @@ class StatewideTestRepository
         year = year(row)
         data = percentage(row)
         category = category(row)
-        binding.pry
           if returned_hash[name].nil?
             returned_hash[name] = {}
             returned_hash[name][year] = {category => data}
           elsif returned_hash[name][year].nil?
             returned_hash[name][year] = {category => data}
           else returned_hash[name][year][category].nil? 
-            returned_hash[name][year].merge({category => data})
+            returned_hash[name][year] = returned_hash[name][year].merge({category => data})
           end
       end
       returned_hash
@@ -93,16 +92,16 @@ class StatewideTestRepository
         name = location(row)
         year = year(row)
         data = percentage(row)
-        category = category(row)
+        category = race_ethnicity(row)
           if returned_hash[name].nil?
             returned_hash[name] = {}
-            returned_hash[name][year] = {}
             returned_hash[name][year] = {category => data}
-          else
-            returned_hash[name][year][category] = data
+          elsif returned_hash[name][year].nil?
+            returned_hash[name][year] = {category => data}
+          else returned_hash[name][year][category].nil?
+            returned_hash[name][year] = returned_hash[name][year].merge({category => data})
           end
       end
-
       returned_hash
   end
 
