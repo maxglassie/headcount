@@ -28,7 +28,7 @@ class EnrollmentRepository
     hash_of_data_hashes = {}
     open_file_hash.each do |key, value|
       if key == :kindergarten
-          hash_of_data_hashes[key] = kindergarten_create_data_hash(value)
+          hash_of_data_hashes[:kindergarten_participation] = kindergarten_create_data_hash(value)
       else key == :high_school_graduation
           hash_of_data_hashes[key] = highschool_create_data_hash(value)
       end
@@ -52,7 +52,7 @@ class EnrollmentRepository
   end
 
   def build_repository(hash_of_data_hashes)
-    populate_repository(hash_of_data_hashes[:kindergarten])
+    populate_repository(hash_of_data_hashes[:kindergarten_participation])
     hash_of_data_hashes.each do |key, value|
       add_data_to_repository_objects(key, value)
     end
@@ -70,7 +70,7 @@ class EnrollmentRepository
       csv.each do |row|
         name = row[:location]
         year = row[:timeframe].to_i
-        data = row[:data].to_f
+        data = row[:data][0..4].to_f
           if returned_hash[name].nil?
             returned_hash[name] = {}
             returned_hash[name][year] = data

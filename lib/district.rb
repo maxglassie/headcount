@@ -1,3 +1,5 @@
+require 'pry'
+
 class District
   attr_accessor :data
 

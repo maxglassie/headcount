@@ -13,9 +13,10 @@ class DistrictRepository
     @relationships = Hash.new
   end
 
-#could refactor - move the hash iterator out 
+#could refactor - move the hash iterator out
   def load_data(input_file_hash)
     make_category_repositories(input_file_hash)
+    # binding.pry
     input_file_hash.each_value do |value|
       #may have to match the key value and handle differently - create a repo
       #this is interesting logic, will need to be abstracted to a different method
@@ -25,7 +26,7 @@ class DistrictRepository
    end
   end
 
-  #there will be a similar dispatch on type method for the 
+  #there will be a similar dispatch on type method for the
   #enrollment repository, etc, based on the file
   #could create a higher order method for making the methods?
   #
@@ -51,6 +52,7 @@ class DistrictRepository
 
   def find_by_name(name)
     @repository[name.upcase]
+    # binding.pry
   end
 
   def find_all_matching(string)
