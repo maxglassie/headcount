@@ -55,10 +55,10 @@ class StatewideTestRepositoryTest < Minitest::Test
   def test_create_data_hash_dispatcher
     output = @str.create_open_file_hash(@fixture_hash[:statewide_testing])
     result = @str.create_data_hash_dispatcher(output)
-    
+
     expected = 0.541
 
-    assert_equal expected, result[:math]["COLORADO"][2011][:"hawaiian/pacific_islander"]
+    assert_equal expected, result[:math]["COLORADO"][2011][:pacific_islander]
   end
 
   def test_populate_repository
@@ -100,22 +100,19 @@ class StatewideTestRepositoryTest < Minitest::Test
     expected = 0.541
 
     st = @str.find_by_name("COLORADO")
-    assert_equal expected, st.data[:math][2011][:"hawaiian/pacific_islander"]
+    assert_equal expected, st.data[:math][2011][:pacific_islander]
   end
 
   def test_load_full_data_for_state_wide
-    #passes, but needs better assertion
-    skip
     @str.load_data(@state_wide_full_hash)
     statewide = @str.find_by_name("ADAMS COUNTY 14")
 
-    expected = ""
+    expected = StatewideTest
 
-    assert_equal expected, statewide.data
+    assert_equal expected, statewide.class
   end
 
-  def test_load_district_repository
-    # skip
+  def test_load_repository
     district = @dr.find_by_name("ADAMS COUNTY 14")
 
     statewide = district.statewide_test
@@ -124,8 +121,8 @@ class StatewideTestRepositoryTest < Minitest::Test
   end
 
   def test_basic_proficiency_by_grade
-    skip
-      str = statewide_repo
+      district = @dr.find_by_name("ACADEMY 20")
+      statewide = district.statewide_test
       expected = { 2008 => {:math => 0.857, :reading => 0.866, :writing => 0.671},
                    2009 => {:math => 0.824, :reading => 0.862, :writing => 0.706},
                    2010 => {:math => 0.849, :reading => 0.864, :writing => 0.662},
@@ -135,12 +132,86 @@ class StatewideTestRepositoryTest < Minitest::Test
                    2014 => {:math => 0.834, :reading => 0.831, :writing => 0.639}
                  }
 
-      testing = str.find_by_name("ACADEMY 20")
+      testing = statewide
       expected.each do |year, data|
         data.each do |subject, proficiency|
           assert_in_delta proficiency, testing.proficient_by_grade(3)[year][subject], 0.005
         end
       end
+  end
+
+  def test_basic_proficiency_by_race
+    district = @dr.find_by_name("ACADEMY 20")
+    statewide = district.statewide_test
+    expected = { 2011 => {math: 0.816, reading: 0.897, writing: 0.826},
+                 2012 => {math: 0.818, reading: 0.893, writing: 0.808},
+                 2013 => {math: 0.805, reading: 0.901, writing: 0.810},
+                 2014 => {math: 0.800, reading: 0.855, writing: 0.789},
+               }
+
+    result = statewide.proficient_by_race_or_ethnicity(:asian)
+    expected.each do |year, data|
+      data.each do |subject, proficiency|
+        assert_in_delta proficiency, result[year][subject], 0.005
+      end
+    end
+  end
+
+   def test_proficiency_by_subject_and_year
+    district = @dr.find_by_name("ACADEMY 20")
+
+    testing = district.statewide_test
+
+    assert_in_delta 0.653, testing.proficient_for_subject_by_grade_in_year(:math, 8, 2011), 0.005
+
+    district_2 = @dr.find_by_name("WRAY SCHOOL DISTRICT RD-2")
+    
+    testing = district_2.statewide_test
+    assert_in_delta 0.89, testing.proficient_for_subject_by_grade_in_year(:reading, 3, 2014), 0.005
+
+    district_3 = @dr.find_by_name("PLATEAU VALLEY 50")
+    testing = district_3.statewide_test
+
+    assert_equal "N/A", testing.proficient_for_subject_by_grade_in_year(:reading, 8, 2011)
+  end
+
+  def test_proficiency_by_subject_race_and_year
+    @str.load_data(@state_wide_full_hash)
+
+    testing = @str.find_by_name("AULT-HIGHLAND RE-9")
+    assert_in_delta 0.611, testing.proficient_for_subject_by_race_in_year(:math, :white, 2012), 0.005
+    assert_in_delta 0.310, testing.proficient_for_subject_by_race_in_year(:math, :hispanic, 2014), 0.005
+    assert_in_delta 0.794, testing.proficient_for_subject_by_race_in_year(:reading, :white, 2013), 0.005
+    assert_in_delta 0.278, testing.proficient_for_subject_by_race_in_year(:writing, :hispanic, 2014), 0.005
+
+    testing = @str.find_by_name("BUFFALO RE-4")
+    assert_in_delta 0.65, testing.proficient_for_subject_by_race_in_year(:math, :white, 2012), 0.005
+    assert_in_delta 0.437, testing.proficient_for_subject_by_race_in_year(:math, :hispanic, 2014), 0.005
+    assert_in_delta 0.76, testing.proficient_for_subject_by_race_in_year(:reading, :white, 2013), 0.005
+    assert_in_delta 0.375, testing.proficient_for_subject_by_race_in_year(:writing, :hispanic, 2014), 0.005
+  end
+
+  def test_unknown_data_errors
+    @str.load_data(@state_wide_full_hash)
+
+    testing = @str.find_by_name("AULT-HIGHLAND RE-9")
+
+
+    assert_raises(UnknownDataError) do
+      testing.proficient_by_grade(1)
+    end
+
+    assert_raises(UnknownDataError) do
+      testing.proficient_for_subject_by_grade_in_year(:pizza, 8, 2011)
+    end
+
+    assert_raises(UnknownDataError) do
+      testing.proficient_for_subject_by_race_in_year(:reading, :pizza, 2013)
+    end
+
+    assert_raises(UnknownDataError) do
+      testing.proficient_for_subject_by_race_in_year(:pizza, :white, 2013)
+    end
   end
 
 end

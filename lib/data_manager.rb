@@ -10,15 +10,23 @@ module DataManager
   end
 
   def percentage(row)
-    row[:data].to_f
+    if row[:data].to_s.include?("LNE") || row[:data].to_s.include?("N/A")
+      row[:data]
+    else
+      row[:data].to_f
+    end
   end
 
   def category(row)
-    row[:score].downcase.to_sym
+      row[:score].downcase.to_sym
   end
 
   def race_ethnicity(row)
-    row[:race_ethnicity].downcase.gsub(" ", '_').to_sym
+    if row[:race_ethnicity].downcase.include?("pacific")
+      row[:race_ethnicity].downcase.split("/").last.gsub(" ", "_").to_sym
+    else
+      row[:race_ethnicity].downcase.gsub(" ", '_').to_sym
+    end
   end
 
 end

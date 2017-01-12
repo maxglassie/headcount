@@ -33,4 +33,8 @@ class StatewideTestTest< Minitest::Test
     assert_equal expected, e.data
   end
 
+  def test_proficient_by_grade
+    
+  end
+
 end
