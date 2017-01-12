@@ -1,40 +1,39 @@
 require 'pry'
 require "csv"
-require_relative "district"
-require_relative "enrollment_repository"
+require_relative 'district'
+require_relative 'enrollment_repository'
+require_relative 'statewide_test_repository'
+require_relative 'economic_profile_repository'
 
 class DistrictRepository
 
   attr_accessor :repository, :relationships
-
 
   def initialize(data = {})
     @repository = data
     @relationships = Hash.new
   end
 
-#could refactor - move the hash iterator out
   def load_data(input_file_hash)
     make_category_repositories(input_file_hash)
-    # binding.pry
-    input_file_hash.each_value do |value|
-      #may have to match the key value and handle differently - create a repo
-      #this is interesting logic, will need to be abstracted to a different method
-     value.each_value do |file|
-       read_file(file)
-     end
-   end
   end
 
-  #there will be a similar dispatch on type method for the
-  #enrollment repository, etc, based on the file
-  #could create a higher order method for making the methods?
-  #
   def make_category_repositories(input_file_hash)
-    if input_file_hash[:enrollment]
+    unless input_file_hash[:enrollment].nil?
       e = EnrollmentRepository.new
-      @relationships[:enrollment] = e
-      e.load_data(input_file_hash)
+            @relationships[:enrollment] = e
+            e.load_data(input_file_hash)
+      read_file(input_file_hash[:enrollment][:kindergarten])
+    end
+    unless input_file_hash[:statewide_testing].nil?
+      s = StatewideTestRepository.new
+            @relationships[:statewide_testing] = s
+            s.load_data(input_file_hash)
+    end
+    unless input_file_hash[:economic_profile].nil?
+      epr = EconomicProfileRepository.new
+            @relationships[:economic_profile] = epr
+            epr.load_data(input_file_hash)
     end
   end
 

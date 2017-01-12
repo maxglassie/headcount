@@ -35,7 +35,6 @@ class HeadcountAnalystTest < Minitest::Test
   end
 
   def test_kindergarten_participation_compares_to_high_school_graduation
-    # expected = 1.234
     expected = 0.641
     assert_equal expected, @ha.kindergarten_participation_against_high_school_graduation('ACADEMY 20')
   end
@@ -49,7 +48,6 @@ class HeadcountAnalystTest < Minitest::Test
   end
 
   def test_can_calculate_across_a_subset_of_districts
-    # true
     assert_equal false, @ha.kindergarten_participation_correlates_with_high_school_graduation(:across => ['ACADEMY 20', 'ADAMS COUNTY 14', 'AGUILAR REORGANIZED 6', 'ARICKAREE R-2'])
   end
 

@@ -34,7 +34,6 @@ class DistrictRepositoryTest < Minitest::Test
   end
 
   def test_find_by_name_returns_nil
-    skip
     @dr.load_data({
         :enrollment => {
                   :kindergarten => "./test/fixtures/kinder_test_load_data_clean.csv"

@@ -1,18 +1,20 @@
 require 'pry'
 require "csv"
-require_relative "enrollment"
+require_relative "statewide_test"
 require_relative "data_manager"
 
-class EnrollmentRepository
+class StatewideTestRepository
   include DataManager
   attr_accessor :repository
 
   def initialize(data = {})
     @repository = data
+    @race_ethnicity = [:math, :reading, :writing]
+    @grade = [:third_grade, :eighth_grade]
   end
 
   def load_data(input_file_hash)
-    open_file_hash = create_open_file_hash(input_file_hash[:enrollment])
+    open_file_hash = create_open_file_hash(input_file_hash[:statewide_testing])
     hash_of_data_hashes = create_data_hash_dispatcher(open_file_hash)
     build_repository(hash_of_data_hashes)
   end
@@ -28,10 +30,10 @@ class EnrollmentRepository
   def create_data_hash_dispatcher(open_file_hash)
     hash_of_data_hashes = {}
     open_file_hash.each do |key, value|
-      if key == :kindergarten
-          hash_of_data_hashes[:kindergarten_participation] = kindergarten_create_data_hash(value)
-      else key == :high_school_graduation
-          hash_of_data_hashes[key] = highschool_create_data_hash(value)
+      if @grade.include?(key)
+          hash_of_data_hashes[key] = grade_create_data_hash(value)
+      else @race_ethnicity.include?(key)
+          hash_of_data_hashes[key] = race_ethnicity_create_data_hash(value)
       end
     end
     hash_of_data_hashes
@@ -40,20 +42,20 @@ class EnrollmentRepository
   def populate_repository(data_hash)
       data_hash.each do |district, data|
         if @repository[district.upcase] == nil
-          @repository[district.upcase] = Enrollment.new({:name => district.upcase})
+          @repository[district.upcase] = StatewideTest.new({:name => district.upcase})
         end
     end
   end
 
   def add_data_to_repository_objects(key, data_hash)
     data_hash.each do |district, data|
-      e = @repository[district.upcase]
-      e.add_data(key, data)
+      r = @repository[district.upcase]
+      r.add_data(key, data)
     end
   end
 
   def build_repository(hash_of_data_hashes)
-    populate_repository(hash_of_data_hashes[:kindergarten_participation])
+    populate_repository(hash_of_data_hashes[:third_grade])
     hash_of_data_hashes.each do |key, value|
       add_data_to_repository_objects(key, value)
     end
@@ -65,38 +67,43 @@ class EnrollmentRepository
                       header_converters: :symbol)
   end
 
-  def kindergarten_create_data_hash(csv)
+  def grade_create_data_hash(csv)
       returned_hash = {}
 
       csv.each do |row|
         name = location(row)
         year = year(row)
         data = percentage(row)
+        category = category(row)
           if returned_hash[name].nil?
             returned_hash[name] = {}
-            returned_hash[name][year] = data
-          else
-            returned_hash[name][year] = data
+            returned_hash[name][year] = {category => data}
+          elsif returned_hash[name][year].nil?
+            returned_hash[name][year] = {category => data}
+          else returned_hash[name][year][category].nil? 
+            returned_hash[name][year] = returned_hash[name][year].merge({category => data})
           end
       end
       returned_hash
   end
 
-  def highschool_create_data_hash(csv)
+  def race_ethnicity_create_data_hash(csv)
       returned_hash = {}
 
       csv.each do |row|
         name = location(row)
         year = year(row)
         data = percentage(row)
+        category = race_ethnicity(row)
           if returned_hash[name].nil?
             returned_hash[name] = {}
-            returned_hash[name][year] = data
-          else
-            returned_hash[name][year] = data
+            returned_hash[name][year] = {category => data}
+          elsif returned_hash[name][year].nil?
+            returned_hash[name][year] = {category => data}
+          else returned_hash[name][year][category].nil?
+            returned_hash[name][year] = returned_hash[name][year].merge({category => data})
           end
       end
-
       returned_hash
   end
 
