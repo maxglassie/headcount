@@ -53,6 +53,7 @@ class EnrollmentRepository
 
   def build_repository(hash_of_data_hashes)
     populate_repository(hash_of_data_hashes[:kindergarten_participation])
+    # binding.pry
     hash_of_data_hashes.each do |key, value|
       add_data_to_repository_objects(key, value)
     end
