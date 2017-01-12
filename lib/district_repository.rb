@@ -1,8 +1,9 @@
 require 'pry'
 require "csv"
-require_relative "district"
-require_relative "enrollment_repository"
-require_relative "statewide_test_repository"
+require_relative 'district'
+require_relative 'enrollment_repository'
+require_relative 'statewide_test_repository'
+require_relative 'economic_profile_repository'
 
 class DistrictRepository
 
@@ -16,28 +17,24 @@ class DistrictRepository
 
   def load_data(input_file_hash)
     make_category_repositories(input_file_hash)
-    input_file_hash.each_value do |value|
-     value.each_value do |file|
-       read_file(file)
-     end
-   end
   end
 
   def make_category_repositories(input_file_hash)
-    input_file_hash.each do |key, value|
-          if input_file_hash[key] == :enrollment
-            e = EnrollmentRepository.new
+    unless input_file_hash[:enrollment].nil?
+      e = EnrollmentRepository.new
             @relationships[:enrollment] = e
             e.load_data(input_file_hash)
-          elsif input_file_hash[key] == :statewide_testing
-            s = StatewideTestRepository.new
+      read_file(input_file_hash[:enrollment][:kindergarten])
+    end
+    unless input_file_hash[:statewide_testing].nil?
+      s = StatewideTestRepository.new
             @relationships[:statewide_testing] = s
             s.load_data(input_file_hash)
-          else input_file_hash[key] == :economic_profile
-            epr = EconomicProfileRepository.new
+    end
+    unless input_file_hash[:economic_profile].nil?
+      epr = EconomicProfileRepository.new
             @relationships[:economic_profile] = epr
             epr.load_data(input_file_hash)
-          end
     end
   end
 
