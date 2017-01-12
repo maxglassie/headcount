@@ -14,13 +14,11 @@ class StatewideTestTest< Minitest::Test
   end
 
   def test_statewide_creates_new_instance_with_data
-    skip
     statewide = StatewideTest.new({:name => "ACADEMY 20", :kindergarten_participation => {2010 => 0.3915, 2011 => 0.35356, 2012 => 0.2677}})
     assert_equal ({2010 => 0.3915, 2011 => 0.35356, 2012 => 0.2677}), statewide.data[:kindergarten_participation]
   end
 
   def test_add_data_to_hash
-    skip
     e = StatewideTest.new({:name => "ACADEMY 20",
       :kindergarten_participation => {2010 => 0.3915, 2011 => 0.35356, 2012 => 0.2677}})
 
@@ -31,10 +29,6 @@ class StatewideTestTest< Minitest::Test
                         :test => {"blazen" => 45},
                         :jeezy => {"still_blazen" => 100}}
     assert_equal expected, e.data
-  end
-
-  def test_proficient_by_grade
-    
   end
 
 end

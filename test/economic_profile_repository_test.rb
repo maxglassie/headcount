@@ -108,19 +108,7 @@ class EconomicProfileRepositoryTest < Minitest::Test
     assert_equal expected, ep.data[:math][2011][:"hawaiian/pacific_islander"]
   end
 
-  def test_load_full_data_for_state_wide
-    #passes, but needs better assertion
-    skip
-    @epr.load_data(@economic_profile_full_hash)
-    economic_profile = @epr.find_by_name("ADAMS COUNTY 14")
-
-    expected = ""
-
-    assert_equal expected, economic_profile.data
-  end
-
   def test_load_district_repository
-    skip
     district = @dr.find_by_name("ADAMS COUNTY 14")
 
     economic_profile = district.economic_profile
