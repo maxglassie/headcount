@@ -9,7 +9,6 @@ class DistrictRepository
 
   attr_accessor :repository, :relationships
 
-
   def initialize(data = {})
     @repository = data
     @relationships = Hash.new
@@ -52,6 +51,7 @@ class DistrictRepository
 
   def find_by_name(name)
     @repository[name.upcase]
+    # binding.pry
   end
 
   def find_all_matching(string)
