@@ -13,11 +13,18 @@ class District
   end
 
   def enrollment
-    @parent_repository.relationships[:enrollment].find_by_name(self.data[:name])
+    @parent_repository.relationships[:enrollment]
+    .find_by_name(self.data[:name])
   end
 
   def statewide_test
-    @parent_repository.relationships[:statewide_testing].find_by_name(self.data[:name])
+    @parent_repository.relationships[:statewide_testing]
+    .find_by_name(self.data[:name])
+  end
+
+  def economic_profile
+    @parent_repository.relationships[:economic_profile]
+    .find_by_name(self.data[:name])
   end
 
 end
