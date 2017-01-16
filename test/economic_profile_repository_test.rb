@@ -208,6 +208,12 @@ class EconomicProfileRepositoryTest < Minitest::Test
   end
 
   def test_children_in_poverty_in_year
+    @epr.load_data(@fixture_hash)
+    e = @epr.find_by_name("ACADEMY 20")
+    result = e.children_in_poverty_in_year(2006)
+    expected = 0.036
+
+    assert_equal expected, result
   end
 
   def test_free_or_reduced_price_lunch_percentage_in_year

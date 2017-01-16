@@ -20,13 +20,13 @@ class EconomicProfile
   end
 
   def median_household_income_in_year(year)
-    range_hash = {}
+    range = {}
     @data[:median_household_income].each do |key, value|
-      range_hash[enumerate_year_interval(key)] = value
+      range[enumerate_year_interval(key)] = value
     end
 
     income_array = []
-    range_hash.map do |key, value|
+    range.each do |key, value|
       if key.include?(year)
         income_array << value
       end
@@ -43,7 +43,13 @@ class EconomicProfile
   end
 
   def children_in_poverty_in_year(year)
-
+     if @data[:children_in_poverty].nil?
+      return "UnknownDataError"
+    elsif @data[:children_in_poverty][year].nil?
+      return "UnknownDataError"
+    else
+      @data[:children_in_poverty][year]
+    end
   end
 
   def free_or_reduced_price_lunch_percentage_in_year(year)
