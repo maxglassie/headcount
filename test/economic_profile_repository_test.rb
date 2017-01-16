@@ -186,4 +186,57 @@ class EconomicProfileRepositoryTest < Minitest::Test
     assert_equal EconomicProfile, economic_profile.class
   end
 
+  def test_median_household_income_in_year
+    @epr.load_data(@fixture_hash)
+    e = @epr.find_by_name("COLORADO")
+
+    result = e.median_household_income_in_year(2010)
+    expected = 57704
+
+    assert_equal expected, result
+  end
+
+  def test_median_household_income_average
+    @epr.load_data(@fixture_hash)
+    e = @epr.find_by_name("COLORADO")
+
+    result = e.median_household_income_average
+    expected = 57408
+
+    assert_equal expected, result
+
+  end
+
+  def test_children_in_poverty_in_year
+  end
+
+  def test_free_or_reduced_price_lunch_percentage_in_year
+    @epr.load_data(@fixture_hash)
+    e = @epr.find_by_name("COLORADO")
+    result = e.free_or_reduced_price_lunch_percentage_in_year(2006)
+    expected = 0.337
+
+    assert_equal expected, result
+  end
+
+  def test_free_or_reduced_price_lunch_number_in_year
+    @epr.load_data(@fixture_hash)
+
+    e = @epr.find_by_name("COLORADO")
+    result = e.free_or_reduced_price_lunch_number_in_year(2006)
+    expected = 267590
+
+    assert_equal expected, result
+  end
+
+  def test_title_i_in_year
+    @epr.load_data(@fixture_hash)
+
+    e = @epr.find_by_name("COLORADO")
+    result = e.title_i_in_year(2009)
+    expected = 0.216
+
+    assert_equal expected, result
+  end
+
 end

@@ -29,7 +29,7 @@ module DataManager
     end
   end
 
-  def year_range(row) 
+  def year_range(row)
     year_array = row[:timeframe].split('-')
     result = year_array.map do |e|
       e.to_i
@@ -64,6 +64,10 @@ module DataManager
 
   def data_format(row)
     row[:dataformat].downcase.to_sym
+  end
+
+  def enumerate_year_interval(array)
+    Range.new(array[0], array[-1]).to_a
   end
 
 end
