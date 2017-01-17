@@ -61,7 +61,7 @@ class EconomicProfile
   end
 
   def free_or_reduced_price_lunch_number_in_year(year)
-    if @data[:free_or_reduced_price_lunch][year].nil? 
+    if @data[:free_or_reduced_price_lunch][year].nil?
       return "UnknownDataError"
     elsif @data[:free_or_reduced_price_lunch][year][:total].nil?
       return "UnknownDataError"
