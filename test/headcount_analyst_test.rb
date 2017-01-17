@@ -58,40 +58,93 @@ class HeadcountAnalystTest < Minitest::Test
     assert_equal false, @ha.kindergarten_participation_correlates_with_high_school_graduation(:across => ['ACADEMY 20', 'ADAMS COUNTY 14', 'AGUILAR REORGANIZED 6', 'ARICKAREE R-2'])
   end
 
-  def high_poverty_and_high_school_graduation
-    #creates high_graduation_high_poverty result set object
-  end
-
-  def creates_result_set_object
-    #creates result set object
-    #asks for two lists
-    #one of all result entry objects representing matching districts
-    #method - create_result_entry_objects_from_districts
-    #one just the result set object that is the statewide average
-    #returns result set object
+  def test_high_poverty_and_high_school_graduation
+    rs = @ha.high_poverty_and_high_school_graduation
     
-    #needs statewide_average_result_set_object
-    #needs array of result entry objects
-    #asks result set to add data
+    count = rs.matching_districts.count
+    first_result_name = rs.matching_districts.first.name
+    first_result_free = rs.matching_districts.first.free_and_reduced_price_lunch_rate
+
+    statewide_name = rs.statewide_average.name
+    statewide_free = rs.statewide_average.free_and_reduced_price_lunch_rate
+
+    expected_count = 55
+    expected_first_result_name = "ALAMOSA RE-11J"
+    expected_first_result_free = 0.637
+
+    expected_statewide_name = "STATEWIDE AVERAGE"
+    expected_statewide_free = 0.35
+
+    assert_equal expected_count, count
+    assert_equal expected_first_result_name, first_result_name
+    assert_equal expected_first_result_free, first_result_free
+
+    assert_equal expected_statewide_name, statewide_name
+    assert_equal expected_statewide_free, statewide_free
   end
 
-  def create_result_entry_objects_from_districts
-    #make sure to include name
-    #takes hash
-    #returns array of result entry objects
-    #uses district.enrollment.district_average method
-    #and assigns to hash
+  def test_high_poverty_and_graduation_create_result_set_argument
+    result_set_hash = @ha.high_poverty_and_graduation_create_result_set_argument
+    expected = Array
+    result = result_set_hash[:matching_districts].class
+
+    assert_equal expected, result
   end
 
-  def create_statewide_average_result_entry_object
-    #uses statewide average methods below
+  def test_create_result_entry_objects_from_districts
+    district_hash = @ha.districts_matching_high_poverty_high_school_graduation
+    result_entry_array = @ha.create_result_entry_array_from_districts(district_hash)
+
+    result = result_entry_array.first.name
+    expected = "ALAMOSA RE-11J"
+
+    assert_equal expected, result
+  end
+
+  def test_create_statewide_average_result_entry_object
+    result = @ha.create_statewide_average_result_entry_object
+
+    name = result.name
+    free = result.free_and_reduced_price_lunch_rate
+    child = result.children_in_poverty_rate
+    school = result.high_school_graduation_rate
+    median = result.median_household_income
+
+    assert_equal ResultEntry, result.class
+    assert_equal "STATEWIDE AVERAGE", result.name
+    assert_equal 0.35, free
+    assert_equal 0.164, child
+    assert_equal 0.751, school
+    assert_equal 57408, median
+  end
+
+
+  def test_create_result_entry_object_from_district
+    district = @dr.find_by_name("CENTENNIAL R-1")
+    result = @ha.create_result_entry_object(district)
+
+    name = result.name
+    free = result.free_and_reduced_price_lunch_rate
+    child = result.children_in_poverty_rate
+    school = result.high_school_graduation_rate
+    median = result.median_household_income
+
+    assert_equal ResultEntry, result.class
+    assert_equal "CENTENNIAL R-1", result.name
+    assert_equal 0.829, free
+    assert_equal 0.343, child
+    assert_equal 0.834, school
+    assert_equal 20502, median
   end
 
   def test_districts_matching_high_poverty_high_school_graduation
-    result = @ha.districts_matching_high_poverty_high_school_graduation
-    expected = ""
+    returned_hash = @ha.districts_matching_high_poverty_high_school_graduation
 
-    assert_equal expected, result
+    list_of_district_names = returned_hash.map do |name, district|
+      name
+    end
+
+    assert returned_hash["CENTENNIAL R-1"]
   end
 
   def test_high_poverty_and_high_school_graduation?

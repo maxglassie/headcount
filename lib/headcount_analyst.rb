@@ -1,4 +1,6 @@
 require_relative 'district_repository'
+require_relative 'result_set'
+require_relative 'result_entry'
 
 class HeadcountAnalyst
 
@@ -138,47 +140,71 @@ class HeadcountAnalyst
   end
 
   def high_poverty_and_high_school_graduation
-    #creates high_graduation_high_poverty result set object
+    argument = high_poverty_and_graduation_create_result_set_argument
+    ResultSet.new(argument)
   end
 
-  def creates_result_set_object
-    #creates result set object
-    #asks for two lists
-    #one of all result entry objects representing matching districts
-    #method - create_result_entry_objects_from_districts
-    #one just the result set object that is the statewide average
-    #returns result set object
-    
-    #needs statewide_average_result_set_object
-    #needs array of result entry objects
-    #asks result set to add data
+  def high_poverty_and_graduation_create_result_set_argument
+    district_objects = districts_matching_high_poverty_high_school_graduation
+    matching = create_result_entry_array_from_districts(district_objects)
+    statewide = create_statewide_average_result_entry_object
+
+    high_school_result_set_argument = {
+        matching_districts: matching,
+        statewide_average: statewide
+                                                              }
   end
 
-  def create_result_entry_objects_from_districts
-    #make sure to include name
-    #takes hash
-    #returns array of result entry objects
-    #uses district.enrollment.district_average method
-    #and assigns to hash
+  def create_result_entry_array_from_districts(selected_districts_hash)
+    result_entry_array = selected_districts_hash.map do |name, district|
+      create_result_entry_object(district)
+      end
   end
+
+  def create_result_entry_object(district)
+    district_name = district.name
+    median_household = district
+                                      .economic_profile
+                                      .median_household_income_average
+    child_poverty = district
+                            .economic_profile
+                            .children_in_poverty_district_average
+    free_lunch = district
+                        .economic_profile
+                        .free_and_reduced_price_lunch_district_average
+    high_school_graduation = district
+                                              .enrollment
+                                              .high_school_graduation_district_average
+    ResultEntry.new({
+        name: district_name,
+        free_and_reduced_price_lunch_rate: free_lunch,
+        children_in_poverty_rate: child_poverty,
+        high_school_graduation_rate: high_school_graduation,
+        median_household_income: median_household
+                                })
+  end
+
 
   def create_statewide_average_result_entry_object
-    #uses statewide average methods below
+    district_name = "STATEWIDE AVERAGE"
+    median_household = median_household_income_statewide_average
+    child_poverty = children_in_poverty_statewide_average
+    free_lunch = free_and_reduced_price_lunch_statewide_average
+    high_school_graduation = high_school_graduation_statewide_average
+
+    ResultEntry.new({
+        name: district_name,
+        free_and_reduced_price_lunch_rate: free_lunch,
+        children_in_poverty_rate: child_poverty,
+        high_school_graduation_rate: high_school_graduation,
+        median_household_income: median_household
+                                })
   end
 
   def districts_matching_high_poverty_high_school_graduation
-    #iterates through dr, returns districts that match predicate
-    #reusable
-    #stores in a hash / or array? of districts organized by name
-    #use reject?
-    returned = []
-    @district_repository.repository.each do |name, district|
-        if name == "COLORADO"
-          returned << district
-        elsif high_poverty_and_high_school_graduation?(district)
-          returned << district
-        else
-          returned
+    selected_districts = @district_repository.repository.select do |name, district|
+        unless name == "COLORADO"
+           high_poverty_and_high_school_graduation?(district)
         end
       end
   end
