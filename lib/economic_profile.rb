@@ -42,6 +42,14 @@ class EconomicProfile
     total.reduce(:+) / total.length
   end
 
+  def children_in_poverty_district_average
+    total = @data[:children_in_poverty].map do |key, value|
+      value
+    end
+    average = total.reduce(:+) / total.length
+    average.to_s[0..4].to_f
+  end
+
   def children_in_poverty_in_year(year)
      if @data[:children_in_poverty].nil?
       return "UnknownDataError"

@@ -137,4 +137,67 @@ class HeadcountAnalyst
     end
   end
 
+  def high_poverty_and_high_school_graduation
+    #asks for two lists
+    #one of all matching districts
+    #one just the result set object that is the statewide average
+    #returns result set object
+  end
+
+  def creates_result_set_object
+    #creates result set object
+  end
+
+  def populates_result_set_object
+    #populates result set object with result set objects
+    #needs statewide_average
+    #needs array of result entry objects
+    #asks result set to add data
+  end
+
+  def create_result_entry_objects_from_districts
+    #takes make sure to include name
+    #takes hash
+    #returns array of objects
+  end
+
+  def districts_matching_high_poverty_high_school_graduation
+    #iterates through dr, returns districts that match predicate
+    #reusable
+    #stores in a hash of districts organized by name
+  end
+
+  def high_poverty_and_high_school_graduation_predicate
+    #checks a district to see if they're above all three
+    #true && true && true
+    #free lunch, children in poverty, high school
+    #returns true if so, false otherwise
+  end
+
+  def free_lunch_above_statewide_average_predicate
+    #checks district object, returns true if district is above statewide 
+    #average
+    #needs a district average method for each district criteria 
+  end
+
+  def children_in_poverty_above_statewide_average_predicate
+    #checks district object, returns true if above statewide
+  end
+
+  def high_school_graduation_above_state_wide_average_predicate
+    #
+  end
+
+  def children_in_poverty_statewide_average
+    #does the thing
+  end
+
+  def free_and_reduced_price_lunch_statewide_average
+    #colorado
+  end
+
+  def high_school_graduation_statewide_average
+    #colorado
+  end
+
 end

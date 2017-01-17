@@ -216,6 +216,15 @@ class EconomicProfileRepositoryTest < Minitest::Test
     assert_equal expected, result
   end
 
+  def test_child_poverty_district_average
+    @epr.load_data(@fixture_hash)
+    e = @epr.find_by_name("ACADEMY 20")
+    result = e.children_in_poverty_district_average
+    expected = 0.041
+
+    assert_equal expected, result
+  end
+
   def test_free_or_reduced_price_lunch_percentage_in_year
     @epr.load_data(@fixture_hash)
     e = @epr.find_by_name("COLORADO")
