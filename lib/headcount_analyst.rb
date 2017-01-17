@@ -138,66 +138,136 @@ class HeadcountAnalyst
   end
 
   def high_poverty_and_high_school_graduation
-    #asks for two lists
-    #one of all matching districts
-    #one just the result set object that is the statewide average
-    #returns result set object
+    #creates high_graduation_high_poverty result set object
   end
 
   def creates_result_set_object
     #creates result set object
-  end
-
-  def populates_result_set_object
-    #populates result set object with result set objects
-    #needs statewide_average
+    #asks for two lists
+    #one of all result entry objects representing matching districts
+    #method - create_result_entry_objects_from_districts
+    #one just the result set object that is the statewide average
+    #returns result set object
+    
+    #needs statewide_average_result_set_object
     #needs array of result entry objects
     #asks result set to add data
   end
 
   def create_result_entry_objects_from_districts
-    #takes make sure to include name
+    #make sure to include name
     #takes hash
-    #returns array of objects
+    #returns array of result entry objects
+    #uses district.enrollment.district_average method
+    #and assigns to hash
+  end
+
+  def create_statewide_average_result_entry_object
+    #uses statewide average methods below
   end
 
   def districts_matching_high_poverty_high_school_graduation
     #iterates through dr, returns districts that match predicate
     #reusable
-    #stores in a hash of districts organized by name
+    #stores in a hash / or array? of districts organized by name
+    #use reject?
+    returned = []
+    @district_repository.repository.each do |name, district|
+        if name == "COLORADO"
+          returned << district
+        elsif high_poverty_and_high_school_graduation?(district)
+          returned << district
+        else
+          returned
+        end
+      end
   end
 
-  def high_poverty_and_high_school_graduation_predicate
-    #checks a district to see if they're above all three
-    #true && true && true
-    #free lunch, children in poverty, high school
-    #returns true if so, false otherwise
+  def high_poverty_and_high_school_graduation?(district)
+    free_lunch = free_lunch_above_statewide_average?(district) 
+    children_in_poverty = children_in_poverty_above_statewide_average?(district)
+    graduation = high_school_graduation_above_statewide_average?(district)
+
+    if free_lunch && children_in_poverty && graduation
+      true
+    else
+      false
+    end
   end
 
-  def free_lunch_above_statewide_average_predicate
-    #checks district object, returns true if district is above statewide 
-    #average
-    #needs a district average method for each district criteria 
+  def free_lunch_above_statewide_average?(district)
+   district_average = district
+                                .economic_profile
+                                .free_and_reduced_price_lunch_district_average
+    statewide_average = free_and_reduced_price_lunch_statewide_average
+
+    if district_average > statewide_average
+      true
+    else
+      false
+    end
   end
 
-  def children_in_poverty_above_statewide_average_predicate
-    #checks district object, returns true if above statewide
+  def children_in_poverty_above_statewide_average?(district)
+    district_average = district
+                                .economic_profile
+                                .children_in_poverty_district_average
+    statewide_average = children_in_poverty_statewide_average
+
+    if district_average > statewide_average
+      true
+    else
+      false
+    end
   end
 
-  def high_school_graduation_above_state_wide_average_predicate
-    #
+  def high_school_graduation_above_statewide_average?(district)
+    district_average = district
+                                .enrollment
+                                .high_school_graduation_district_average
+    statewide_average = high_school_graduation_statewide_average
+
+    if district_average > statewide_average
+      true
+    else
+      false
+    end
+  end
+
+  def median_household_income_statewide_average
+    statewide = @district_repository
+                        .find_by_name("COLORADO")
+    statewide
+    .economic_profile
+    .median_household_income_average
   end
 
   def children_in_poverty_statewide_average
-    #does the thing
+    total = @district_repository.repository.map do |name, district|
+        unless name == "COLORADO"
+          district
+          .economic_profile
+          .children_in_poverty_district_average
+        end
+      end
+    average = total.compact.reduce(:+) / total.compact.length
+    average.to_s[0..4].to_f
   end
 
   def free_and_reduced_price_lunch_statewide_average
-    #colorado
+    statewide = @district_repository
+                        .find_by_name("COLORADO")
+    statewide
+    .economic_profile
+    .free_and_reduced_price_lunch_district_average
   end
 
   def high_school_graduation_statewide_average
-    #colorado
+    statewide = @district_repository
+                        .find_by_name("COLORADO")
+    statewide
+    .enrollment
+    .high_school_graduation_district_average
   end
 
 end
