@@ -119,7 +119,7 @@ class EconomicProfileRepository
         data = number_or_percentage(row)
         category = percent_or_total(row)
         poverty_level = poverty_level(row)
-        
+
         if poverty_level == :eligible_for_free_or_reduced_lunch
           if returned_hash[name].nil?
             returned_hash[name] = {}

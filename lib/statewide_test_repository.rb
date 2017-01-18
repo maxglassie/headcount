@@ -1,4 +1,4 @@
-require 'pry'
+# require 'pry'
 require "csv"
 require_relative "statewide_test"
 require_relative "data_manager"
@@ -80,7 +80,7 @@ class StatewideTestRepository
             returned_hash[name][year] = {category => data}
           elsif returned_hash[name][year].nil?
             returned_hash[name][year] = {category => data}
-          else returned_hash[name][year][category].nil? 
+          else returned_hash[name][year][category].nil?
             returned_hash[name][year] = returned_hash[name][year].merge({category => data})
           end
       end
