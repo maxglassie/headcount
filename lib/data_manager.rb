@@ -29,4 +29,45 @@ module DataManager
     end
   end
 
+  def year_range(row)
+    year_array = row[:timeframe].split('-')
+    result = year_array.map do |e|
+      e.to_i
+    end
+  end
+
+  def poverty_level(row)
+    row[:poverty_level].downcase.gsub(" ", "_").to_sym
+  end
+
+  def number_or_percentage(row)
+    if data_format(row) == :number
+      row[:data].to_i
+    elsif data_format(row) == :percent
+       row[:data].to_f
+     else
+      row[:data]
+    end
+  end
+
+  def currency(row)
+    row[:data].to_i
+  end
+
+  def percent_or_total(row)
+    if row[:dataformat].downcase.to_sym == :number
+      :total
+    else row[:dataformat].downcase.to_sym == :percent
+      :percentage
+    end
+  end
+
+  def data_format(row)
+    row[:dataformat].downcase.to_sym
+  end
+
+  def enumerate_year_interval(array)
+    Range.new(array[0], array[-1]).to_a
+  end
+
 end

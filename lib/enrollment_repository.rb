@@ -1,4 +1,3 @@
-require 'pry'
 require "csv"
 require_relative "enrollment"
 require_relative "data_manager"
@@ -20,6 +19,7 @@ class EnrollmentRepository
   def create_open_file_hash(input_file_hash)
     open_file_hash = {}
     input_file_hash.each do |key, value|
+      # binding.pry
         open_file_hash[key] = open_file(value)
      end
      open_file_hash
@@ -47,6 +47,7 @@ class EnrollmentRepository
 
   def add_data_to_repository_objects(key, data_hash)
     data_hash.each do |district, data|
+      # binding.pry
       e = @repository[district.upcase]
       e.add_data(key, data)
     end
@@ -55,6 +56,7 @@ class EnrollmentRepository
   def build_repository(hash_of_data_hashes)
     populate_repository(hash_of_data_hashes[:kindergarten_participation])
     hash_of_data_hashes.each do |key, value|
+      # binding.pry
       add_data_to_repository_objects(key, value)
     end
   end
