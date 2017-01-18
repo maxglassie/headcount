@@ -144,6 +144,22 @@ class HeadcountAnalyst
     ResultSet.new(argument)
   end
 
+  def high_income_disparity
+    argument = high_income_disparity_create_result_set_argument
+    ResultSet.new(argument)
+  end
+
+  def high_income_disparity_create_result_set_argument
+    district_objects = districts_matching_high_income_disparity
+    matching = create_result_entry_array_from_districts(district_objects)
+    statewide = create_statewide_average_result_entry_object
+
+    high_school_result_set_argument = {
+        matching_districts: matching,
+        statewide_average: statewide
+                                                              }
+  end
+
   def high_poverty_and_graduation_create_result_set_argument
     district_objects = districts_matching_high_poverty_high_school_graduation
     matching = create_result_entry_array_from_districts(district_objects)
@@ -209,6 +225,25 @@ class HeadcountAnalyst
       end
   end
 
+  def districts_matching_high_income_disparity
+     selected_districts = @district_repository.repository.select do |name, district|
+        unless name == "COLORADO"
+           high_income_disparity?(district)
+        end
+      end
+  end
+
+  def high_income_disparity?(district)
+    income = median_household_income_above_statewide_average?(district)
+    children_in_poverty = children_in_poverty_above_statewide_average?(district)
+
+    if income && children_in_poverty
+      true
+    else
+      false
+    end
+  end
+
   def high_poverty_and_high_school_graduation?(district)
     free_lunch = free_lunch_above_statewide_average?(district) 
     children_in_poverty = children_in_poverty_above_statewide_average?(district)
@@ -252,6 +287,19 @@ class HeadcountAnalyst
                                 .enrollment
                                 .high_school_graduation_district_average
     statewide_average = high_school_graduation_statewide_average
+
+    if district_average > statewide_average
+      true
+    else
+      false
+    end
+  end
+
+  def median_household_income_above_statewide_average?(district)
+    district_average =  district
+                                  .economic_profile
+                                  .median_household_income_average
+    statewide_average = median_household_income_statewide_average
 
     if district_average > statewide_average
       true

@@ -60,7 +60,7 @@ class HeadcountAnalystTest < Minitest::Test
 
   def test_high_poverty_and_high_school_graduation
     rs = @ha.high_poverty_and_high_school_graduation
-    
+
     count = rs.matching_districts.count
     first_result_name = rs.matching_districts.first.name
     first_result_free = rs.matching_districts.first.free_and_reduced_price_lunch_rate
@@ -83,8 +83,41 @@ class HeadcountAnalystTest < Minitest::Test
     assert_equal expected_statewide_free, statewide_free
   end
 
+  def test_high_income_disparity
+    rs = @ha.high_income_disparity
+
+    count = rs.matching_districts.count
+    first_result_name = rs.matching_districts.first.name
+    first_result_free = rs.matching_districts.first.free_and_reduced_price_lunch_rate
+
+    statewide_name = rs.statewide_average.name
+    statewide_free = rs.statewide_average.free_and_reduced_price_lunch_rate
+
+    expected_count = 2
+    expected_first_result_name = "HINSDALE COUNTY RE 1"
+    expected_first_result_free = 0.213
+
+    expected_statewide_name = "STATEWIDE AVERAGE"
+    expected_statewide_free = 0.35
+
+    assert_equal expected_count, count
+    assert_equal expected_first_result_name, first_result_name
+    assert_equal expected_first_result_free, first_result_free
+
+    assert_equal expected_statewide_name, statewide_name
+    assert_equal expected_statewide_free, statewide_free
+  end
+
   def test_high_poverty_and_graduation_create_result_set_argument
     result_set_hash = @ha.high_poverty_and_graduation_create_result_set_argument
+    expected = Array
+    result = result_set_hash[:matching_districts].class
+
+    assert_equal expected, result
+  end
+
+  def test_high_income_disparity_create_result_set_argument
+    result_set_hash = @ha.high_income_disparity_create_result_set_argument
     expected = Array
     result = result_set_hash[:matching_districts].class
 
@@ -147,6 +180,30 @@ class HeadcountAnalystTest < Minitest::Test
     assert returned_hash["CENTENNIAL R-1"]
   end
 
+  def test_districts_matching_high_income_disparity
+    returned_hash = @ha.districts_matching_high_income_disparity
+
+    list_of_district_names = returned_hash.map do |name, district|
+      name
+    end
+
+    assert returned_hash["HINSDALE COUNTY RE 1"]
+  end
+
+  def test_high_income_disparity?
+    matching_district = @dr.find_by_name("HINSDALE COUNTY RE 1")
+    non_matching_district = @dr.find_by_name("ACADEMY 20")
+
+    matching_result = @ha.high_income_disparity?(matching_district)
+    non_matching_result = @ha.high_income_disparity?(non_matching_district)
+
+    expected_matching = true
+    expected_non_matching = false
+
+    assert_equal expected_matching, matching_result
+    assert_equal expected_non_matching, non_matching_result
+  end
+
   def test_high_poverty_and_high_school_graduation?
     matching_district = @dr.find_by_name("CENTENNIAL R-1")
     non_matching_district = @dr.find_by_name("ACADEMY 20")
@@ -206,6 +263,23 @@ class HeadcountAnalystTest < Minitest::Test
     above_expected = true
 
     below_result = @ha.high_school_graduation_above_statewide_average?(below)
+    below_expected = false
+
+    assert_equal above_expected, above_result
+    assert_equal below_result, below_expected
+  end
+
+  def test_median_household_income_above_statewide_average?
+    above = @dr.find_by_name("ACADEMY 20")
+    below = @dr.find_by_name("ADAMS-ARAPAHOE 28J")
+
+    above_number = above.economic_profile.median_household_income_average
+    below_number = below.economic_profile.median_household_income_average
+
+    above_result = @ha.median_household_income_above_statewide_average?(above)
+    above_expected = true
+
+    below_result = @ha.median_household_income_above_statewide_average?(below)
     below_expected = false
 
     assert_equal above_expected, above_result
