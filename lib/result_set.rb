@@ -1,5 +1,5 @@
 class ResultSet
-  attr_reader :matching_districts, :statewide_average
+  attr_reader :data
 
   def initialize(data = {})
     @data = data

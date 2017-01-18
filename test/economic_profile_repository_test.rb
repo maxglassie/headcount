@@ -254,6 +254,4 @@ class EconomicProfileRepositoryTest < Minitest::Test
     assert_equal expected, result
   end
 
-  def test_
-
 end

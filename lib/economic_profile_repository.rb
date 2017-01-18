@@ -80,7 +80,7 @@ class EconomicProfileRepository
         name = location(row)
         year = year_range(row)
         data = currency(row)
-           if returned_hash[name].nil?
+          if returned_hash[name].nil?
             returned_hash[name] = {}
             returned_hash[name][year] = data
           else

@@ -29,7 +29,7 @@ class HeadcountAnalyst
                         .reduce(:+)/against_percentages.count
       result = district_averages/against_averages
       result.round(3)
-    end
+  end
 
   def kindergarten_participation_rate_variation_trend(district_name, against_district)
     against_name = against_district[:against]
@@ -100,41 +100,28 @@ class HeadcountAnalyst
     end
   end
 
-
-
   def kindergarten_participation_against_household_income(district_name)
-    #  academy_20 = EconomicProfile.find_by_name('ACADMY 20').median_household_income_average
-    # all_of_colorado = EconomicProfile.find_by_name('Colorado').median_household_income_average
-
-    # academy_20 / all_of_colorado
     district_object = @district_repository
                               .find_by_name(district_name)
     statewide_object = @district_repository
                               .find_by_name("COLORADO")
 
-    # kindergarten variation is defined as the district's average kindergarten participation compared against the state's average as described in iteration 1.
-    # median income variation defined as the district's average median income divided by the state's average median income as defined in iteration 3
-
-    # district's average median income
     district_income_average = district_object
                             .economic_profile
                             .median_household_income_average
 
-    # state's average median income
     statewide_income_average = statewide_object
                               .economic_profile
                               .median_household_income_average
-    # district's average kindergarten participation
+
     kindergarten_percentages = district_object
                               .enrollment
                               .kindergarten_participation_by_year
-                              # binding.pry
 
-    # state's average kindergarten participation
     statewide_kindergarten_percentages = statewide_object
                                         .enrollment
                                         .kindergarten_participation_by_year
-    # calculate kindergarten variation
+
     kindergarten_averages = kindergarten_percentages
                           .values
                           .reduce(:+)/kindergarten_percentages.values.count
@@ -145,7 +132,7 @@ class HeadcountAnalyst
     kindergarten_variation = kindergarten_averages/statewide_kindergarten_averages
 
     median_income_variation = district_income_average.to_f/statewide_income_average.to_f
-    # binding.pry
+
     comparison = (kindergarten_variation/median_income_variation).to_s[0..4].to_f
   end
 

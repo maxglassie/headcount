@@ -195,7 +195,7 @@ class HeadcountAnalystTest < Minitest::Test
     median = result.median_household_income
 
     assert_equal ResultEntry, result.class
-    assert_equal "STATEWIDE AVERAGE", result.name
+    assert_equal "STATEWIDE AVERAGE", name
     assert_equal 0.35, free
     assert_equal 0.164, child
     assert_equal 0.751, school
@@ -224,19 +224,11 @@ class HeadcountAnalystTest < Minitest::Test
   def test_districts_matching_high_poverty_high_school_graduation
     returned_hash = @ha.districts_matching_high_poverty_high_school_graduation
 
-    list_of_district_names = returned_hash.map do |name, district|
-      name
-    end
-
     assert returned_hash["CENTENNIAL R-1"]
   end
 
   def test_districts_matching_high_income_disparity
     returned_hash = @ha.districts_matching_high_income_disparity
-
-    list_of_district_names = returned_hash.map do |name, district|
-      name
-    end
 
     assert returned_hash["HINSDALE COUNTY RE 1"]
   end
@@ -273,9 +265,6 @@ class HeadcountAnalystTest < Minitest::Test
     above = @dr.find_by_name("CENTENNIAL R-1")
     below = @dr.find_by_name("ACADEMY 20")
 
-    above_percent = above.economic_profile.free_and_reduced_price_lunch_district_average
-    below_percent = below.economic_profile.free_and_reduced_price_lunch_district_average
-
     above_result = @ha.free_lunch_above_statewide_average?(above)
     above_expected = true
 
@@ -289,9 +278,6 @@ class HeadcountAnalystTest < Minitest::Test
   def test_children_in_poverty_above_statewide_average?
     above = @dr.find_by_name("CENTENNIAL R-1")
     below = @dr.find_by_name("ACADEMY 20")
-
-    above_percent = above.economic_profile.children_in_poverty_district_average
-    below_percent = below.economic_profile.children_in_poverty_district_average
 
     above_result = @ha.children_in_poverty_above_statewide_average?(above)
     above_expected = true
@@ -307,9 +293,6 @@ class HeadcountAnalystTest < Minitest::Test
     above = @dr.find_by_name("CENTENNIAL R-1")
     below = @dr.find_by_name("ADAMS-ARAPAHOE 28J")
 
-    above_percent = above.enrollment.high_school_graduation_district_average
-    below_percent = below.enrollment.high_school_graduation_district_average
-
     above_result = @ha.high_school_graduation_above_statewide_average?(above)
     above_expected = true
 
@@ -323,9 +306,6 @@ class HeadcountAnalystTest < Minitest::Test
   def test_median_household_income_above_statewide_average?
     above = @dr.find_by_name("ACADEMY 20")
     below = @dr.find_by_name("ADAMS-ARAPAHOE 28J")
-
-    above_number = above.economic_profile.median_household_income_average
-    below_number = below.economic_profile.median_household_income_average
 
     above_result = @ha.median_household_income_above_statewide_average?(above)
     above_expected = true
