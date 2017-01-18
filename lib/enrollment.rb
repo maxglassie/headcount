@@ -33,6 +33,16 @@ class Enrollment
     @data[:high_school_graduation][year].to_s[0..4].to_f
   end
 
+  def high_school_graduation_district_average
+    total = @data[:high_school_graduation].map do |key, value|
+      if value.is_a?(Float)
+        value
+      end
+    end
+    average = total.compact.reduce(:+) / total.length
+    average.to_s[0..4].to_f
+  end
+
   def add_data(hash_key, input_data)
       if @data[hash_key] == nil
         @data[hash_key] = {}

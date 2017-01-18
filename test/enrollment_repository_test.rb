@@ -145,4 +145,18 @@ class EnrollmentRepositoryTest < Minitest::Test
     assert_equal "ACADEMY 20", returned_enrollment.data[:name]
   end
 
+   def test_high_school_graduation_district_average
+    @er.load_data({
+                          :enrollment => {
+                            :kindergarten => "./data/Kindergartners in full-day program.csv",
+                            :high_school_graduation => "./data/High school graduation rates.csv"
+                                                    }
+                          })
+    e = @er.find_by_name("ACADEMY 20")
+    result = e.high_school_graduation_district_average
+    expected = 0.898
+
+    assert_equal expected, result
+  end
+
 end #class end

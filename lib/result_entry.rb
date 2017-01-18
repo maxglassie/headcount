@@ -21,4 +21,8 @@ class ResultEntry
     @data[:median_household_income]
   end
 
+  def name
+    @data[:name]
+  end
+
 end

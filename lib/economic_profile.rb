@@ -42,6 +42,16 @@ class EconomicProfile
     total.reduce(:+) / total.length
   end
 
+  def children_in_poverty_district_average
+    total = @data[:children_in_poverty].map do |key, value|
+      if value.is_a?(Float)
+        value
+      end
+    end
+    average = total.compact.reduce(:+) / total.compact.length
+    average.to_s[0..4].to_f
+  end
+
   def children_in_poverty_in_year(year)
      if @data[:children_in_poverty].nil?
       return "UnknownDataError"
@@ -68,6 +78,16 @@ class EconomicProfile
     else
       @data[:free_or_reduced_price_lunch][year][:total]
     end
+  end
+
+  def free_and_reduced_price_lunch_district_average
+    total = @data[:free_or_reduced_price_lunch].map do |year, category|
+      if category[:percentage]
+        category[:percentage]
+      end
+    end
+    average = total.reduce(:+) / total.length
+    average.to_s[0..4].to_f
   end
 
   def title_i_in_year(year)
