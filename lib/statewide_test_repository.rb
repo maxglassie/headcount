@@ -1,10 +1,12 @@
-# require 'pry'
+require 'pry'
 require "csv"
 require_relative "statewide_test"
 require_relative "data_manager"
+require_relative "load_data"
 
 class StatewideTestRepository
   include DataManager
+  include LoadData
   attr_accessor :repository
 
   def initialize(data = {})
@@ -16,15 +18,8 @@ class StatewideTestRepository
   def load_data(input_file_hash)
     open_file_hash = create_open_file_hash(input_file_hash[:statewide_testing])
     hash_of_data_hashes = create_data_hash_dispatcher(open_file_hash)
+    populate_repository(hash_of_data_hashes[:third_grade])
     build_repository(hash_of_data_hashes)
-  end
-
-  def create_open_file_hash(input_file_hash)
-    open_file_hash = {}
-    input_file_hash.each do |key, value|
-        open_file_hash[key] = open_file(value)
-     end
-     open_file_hash
   end
 
   def create_data_hash_dispatcher(open_file_hash)
@@ -45,26 +40,6 @@ class StatewideTestRepository
           @repository[district.upcase] = StatewideTest.new({:name => district.upcase})
         end
     end
-  end
-
-  def add_data_to_repository_objects(key, data_hash)
-    data_hash.each do |district, data|
-      r = @repository[district.upcase]
-      r.add_data(key, data)
-    end
-  end
-
-  def build_repository(hash_of_data_hashes)
-    populate_repository(hash_of_data_hashes[:third_grade])
-    hash_of_data_hashes.each do |key, value|
-      add_data_to_repository_objects(key, value)
-    end
-  end
-
-  def open_file(file_name)
-    CSV.open(file_name,
-                      headers: true,
-                      header_converters: :symbol)
   end
 
   def grade_create_data_hash(csv)
