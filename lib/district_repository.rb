@@ -1,4 +1,4 @@
-# require 'pry'
+require 'pry'
 require "csv"
 require_relative 'district'
 require_relative 'enrollment_repository'

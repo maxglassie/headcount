@@ -1,3 +1,6 @@
+require_relative 'unknown_data_error'
+require_relative 'unknown_race_error'
+
 class StatewideTest
   attr_accessor :data
 
@@ -27,7 +30,7 @@ class StatewideTest
     elsif grade == 8
       @data[:eighth_grade]
     else
-      "UnknownDataError"
+      raise UnknownDataError
     end
   end
 
@@ -53,7 +56,7 @@ class StatewideTest
         end
       
       else
-        "UnknownRaceError"
+        raise UnknownRaceError
       end
       returned_hash
   end
@@ -65,7 +68,7 @@ class StatewideTest
       elsif grade == 8
         @data[:eighth_grade][year][subject]
       else
-        "UnknownDataError"
+        raise UnknownDataError
       end
     end
   end
@@ -74,7 +77,7 @@ class StatewideTest
     if @subjects.include?(subject) && @ethnicity.include?(race)
       @data[subject][year][race]
     else
-      "UnknownDataError"
+      raise UnknownDataError
     end
   end
 
