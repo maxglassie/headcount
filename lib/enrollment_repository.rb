@@ -96,7 +96,6 @@ class EnrollmentRepository
             returned_hash[name][year] = data
           end
       end
-
       returned_hash
   end
 
