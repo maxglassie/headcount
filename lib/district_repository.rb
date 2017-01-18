@@ -1,4 +1,4 @@
-require 'pry'
+# require 'pry'
 require "csv"
 require_relative 'district'
 require_relative 'enrollment_repository'
@@ -51,7 +51,6 @@ class DistrictRepository
 
   def find_by_name(name)
     @repository[name.upcase]
-    # binding.pry
   end
 
   def find_all_matching(string)
