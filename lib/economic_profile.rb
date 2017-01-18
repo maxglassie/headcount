@@ -1,4 +1,6 @@
-require_relative "data_manager"
+require_relative 'data_manager'
+require_relative 'unknown_data_error'
+require_relative 'unknown_race_error'
 
 class EconomicProfile
   include DataManager
@@ -54,9 +56,9 @@ class EconomicProfile
 
   def children_in_poverty_in_year(year)
      if @data[:children_in_poverty].nil?
-      return "UnknownDataError"
+      raise UnknownDataError
     elsif @data[:children_in_poverty][year].nil?
-      return "UnknownDataError"
+      raise UnknownDataError
     else
       @data[:children_in_poverty][year]
     end
@@ -64,7 +66,7 @@ class EconomicProfile
 
   def free_or_reduced_price_lunch_percentage_in_year(year)
     if @data[:free_or_reduced_price_lunch][year][:percentage].nil?
-      return "UnknownDataError"
+      raise UnknownDataError
     else
       @data[:free_or_reduced_price_lunch][year][:percentage]
     end
@@ -72,9 +74,9 @@ class EconomicProfile
 
   def free_or_reduced_price_lunch_number_in_year(year)
     if @data[:free_or_reduced_price_lunch][year].nil?
-      return "UnknownDataError"
+      raise UnknownDataError
     elsif @data[:free_or_reduced_price_lunch][year][:total].nil?
-      return "UnknownDataError"
+      raise UnknownDataError
     else
       @data[:free_or_reduced_price_lunch][year][:total]
     end
@@ -92,7 +94,7 @@ class EconomicProfile
 
   def title_i_in_year(year)
     if @data[:title_i][year].nil?
-      return "UnknownDataError"
+      raise UnknownDataError
     else
       @data[:title_i][year]
     end
