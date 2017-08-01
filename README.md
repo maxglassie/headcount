@@ -1,6 +1,4 @@
-## Headcount: Original Project Description
-
-# HeadCount
+# Headcount: Original Turing Project Description
 
 Federal and state governments publish a huge amount of data. You can find
 a large collection of it on [Data.gov](http://data.gov) -- everything from land surveys
