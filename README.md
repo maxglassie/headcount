@@ -134,13 +134,13 @@ Ultimately, a crude visualization of the structure might look like this:
 Because the requirements for this project are lengthy and complex, we've broken
 them into Iterations in their own files:
 
-* [Iteration 0](headcount/iteration_0.markdown) - District Kindergarten Data Access
-* [Iteration 1](headcount/iteration_1.markdown) - District Kindergarten Relationships & Analysis
-* [Iteration 2](headcount/iteration_2.markdown) - Remaining Enrollment Access & Analysis: High School Graduation
-* [Iteration 3](headcount/iteration_3.markdown) - Data Access & Relationships: Statewide Testing
-* [Iteration 4](headcount/iteration_4.markdown) - Data Access & Relationships: Economic Profile
-* [Iteration 5](headcount/iteration_5.markdown) - Analysis: Statewide Testing
-* [Iteration 6](headcount/iteration_6.markdown) - Analysis: Economic Profile
+* [Iteration 0](https://github.com/turingschool/curriculum/blob/master/source/projects/headcount/iteration_0.markdown) - District Kindergarten Data Access
+* [Iteration 1](https://github.com/turingschool/curriculum/blob/master/source/projects/headcount/iteration_1.markdown) - District Kindergarten Relationships & Analysis
+* [Iteration 2](https://github.com/turingschool/curriculum/blob/master/source/projects/headcount/iteration_2.markdown) - Remaining Enrollment Access & Analysis: High School Graduation
+* [Iteration 3](https://github.com/turingschool/curriculum/blob/master/source/projects/headcount/iteration_3.markdown) - Data Access & Relationships: Statewide Testing
+* [Iteration 4](https://github.com/turingschool/curriculum/blob/master/source/projects/headcount/iteration_4.markdown) - Data Access & Relationships: Economic Profile
+* [Iteration 5](https://github.com/turingschool/curriculum/blob/master/source/projects/headcount/iteration_5.markdown) - Analysis: Statewide Testing
+* [Iteration 6](https://github.com/turingschool/curriculum/blob/master/source/projects/headcount/iteration_6.markdown) - Analysis: Economic Profile
 * Iteration 7 - Total Enrollment (coming soon)
 * Iteration 8 - Special Education, Remediation, and Dropout Rates (coming soon)
 
